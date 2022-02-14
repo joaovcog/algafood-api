@@ -60,4 +60,9 @@ public class TesteController {
 		return cozinhaRepository.existsByNome(nome);
 	}
 	
+	@GetMapping("/restaurantes/por-nome-taxa-frete")
+	public List<Restaurante> restaurantesPorNomeTaxaFrete(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal) {
+		return restauranteRepository.consultar(nome, taxaInicial, taxaFinal);
+	}
+	
 }
