@@ -4,6 +4,7 @@ insert into cozinhas (nome) values ('Chinesa');
 
 insert into restaurantes (nome, taxa_frete, cod_cozinha) values ('Bar e Restaurante do Goiano', 7, 1);
 insert into restaurantes (nome, taxa_frete, cod_cozinha) values ('Massas Gourmet', 5.5, 2);
+insert into restaurantes (nome, taxa_frete, cod_cozinha) values ('Comida Mineira', 0, 1);
 
 
 insert into formas_pagamentos (descricao) values ('Cartão de Crédito');
@@ -26,3 +27,5 @@ insert into cidades (nome, cod_estado) values ('Curitiba', 4);
 
 insert into permissoes (nome, descricao) values ('CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
 insert into permissoes (nome, descricao) values ('EDITAR_COZINHAS', 'Permite editar cozinhas');
+
+insert into restaurantes_formas_pagamentos (cod_restaurante, cod_forma_pagamento) values (1, 1), (1, 2), (1, 3), (2,3), (3, 2), (3, 3);
