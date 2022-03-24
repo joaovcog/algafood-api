@@ -21,7 +21,7 @@ public class Permissao {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long codigo;
 	
-	@Column(length = 30, nullable = false)
+	@Column(length = 60, nullable = false)
 	private String nome;
 	
 	@Column(length = 80, nullable = false)
