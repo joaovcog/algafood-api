@@ -1,3 +1,32 @@
+set foreign_key_checks = 0;
+
+delete from cidades;
+delete from cozinhas;
+delete from estados;
+delete from formas_pagamentos;
+delete from grupos_permissoes;
+delete from grupos;
+delete from permissoes;
+delete from produtos;
+delete from restaurantes;
+delete from restaurantes_formas_pagamentos;
+delete from usuarios;
+delete from usuarios_grupos;
+
+set foreign_key_checks = 1;
+
+
+alter table cidades auto_increment = 1;
+alter table cozinhas auto_increment = 1;
+alter table estados auto_increment = 1;
+alter table formas_pagamentos auto_increment = 1;
+alter table grupos auto_increment = 1;
+alter table permissoes auto_increment = 1;
+alter table produtos auto_increment = 1;
+alter table restaurantes auto_increment = 1;
+alter table usuarios auto_increment = 1;
+
+
 insert into cozinhas (nome) values ('Brasileira');
 insert into cozinhas (nome) values ('Italiana');
 insert into cozinhas (nome) values ('Chinesa');
@@ -48,4 +77,3 @@ insert into permissoes (nome, descricao) values ('EDITAR_COZINHAS', 'Permite edi
 
 
 insert into restaurantes_formas_pagamentos (cod_restaurante, cod_forma_pagamento) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
-
