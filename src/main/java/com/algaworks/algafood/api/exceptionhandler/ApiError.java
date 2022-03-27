@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class Problema {
+public class ApiError {
 	
 	private LocalDateTime dataHora;
 	private String mensagem;
