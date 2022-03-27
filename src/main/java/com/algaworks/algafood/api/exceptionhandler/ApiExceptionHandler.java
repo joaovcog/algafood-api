@@ -1,5 +1,8 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -19,22 +23,44 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		ApiErrorType apiErrorType = ApiErrorType.MENSAGEM_ILEGIVEL;
+		Throwable rootCause = ExceptionUtils.getRootCause(ex);
+		
+		if (rootCause instanceof InvalidFormatException) {
+			return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
+		}
+		
+		ApiErrorType errorType = ApiErrorType.MENSAGEM_ILEGIVEL;
 		String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe.";
 		
-		ApiError error = createApiErrorBuilder(status, apiErrorType, detail).build();
+		ApiError error = createApiErrorBuilder(status, errorType, detail).build();
 		
 		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
 	
+	private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		String path = ex.getPath().stream()
+				.map(ref -> ref.getFieldName())
+				.collect(Collectors.joining("."));
+		
+		ApiErrorType errorType = ApiErrorType.MENSAGEM_ILEGIVEL;
+		String detail = String.format("A propriedade '%s' recebeu o valor '%s', "
+				+ "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.", 
+				path, ex.getValue(), ex.getTargetType().getSimpleName());
+		
+		ApiError error = createApiErrorBuilder(status, errorType, detail).build();
+		
+		return handleExceptionInternal(ex, error, headers, status, request);
+	}
+
 	@ExceptionHandler(EntidadeNaoEncontradaException.class)
 	public ResponseEntity<?> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex,
 			WebRequest request) {
 		HttpStatus status = HttpStatus.NOT_FOUND;
-		ApiErrorType apiErrorType = ApiErrorType.ENTIDADE_NAO_ENCONTRADA;
+		ApiErrorType errorType = ApiErrorType.ENTIDADE_NAO_ENCONTRADA;
 		String detail = ex.getMessage();
 		
-		ApiError error = createApiErrorBuilder(status, apiErrorType, detail).build();
+		ApiError error = createApiErrorBuilder(status, errorType, detail).build();
 		
 		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
@@ -42,10 +68,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(EntidadeEmUsoException.class)
 	public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
 		HttpStatus status = HttpStatus.CONFLICT;
-		ApiErrorType apiErrorType = ApiErrorType.ENTIDADE_EM_USO;
+		ApiErrorType errorType = ApiErrorType.ENTIDADE_EM_USO;
 		String detail = ex.getMessage();
 		
-		ApiError error = createApiErrorBuilder(status, apiErrorType, detail).build();
+		ApiError error = createApiErrorBuilder(status, errorType, detail).build();
 		
 		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
@@ -53,10 +79,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(NegocioException.class)
 	public ResponseEntity<?> handleNegocioException(NegocioException ex, WebRequest request) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
-		ApiErrorType apiErrorType = ApiErrorType.ERRO_NEGOCIO;
+		ApiErrorType errorType = ApiErrorType.ERRO_NEGOCIO;
 		String detail = ex.getMessage();
 		
-		ApiError error = createApiErrorBuilder(status, apiErrorType, detail).build();
+		ApiError error = createApiErrorBuilder(status, errorType, detail).build();
 		
 		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
@@ -79,11 +105,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return super.handleExceptionInternal(ex, body, headers, status, request);
 	}
 	
-	private ApiError.ApiErrorBuilder createApiErrorBuilder(HttpStatus status, ApiErrorType apiErrorType, String detail) {
+	private ApiError.ApiErrorBuilder createApiErrorBuilder(HttpStatus status, ApiErrorType errorType, String detail) {
 		return ApiError.builder()
 				.status(status.value())
-				.type(apiErrorType.getUri())
-				.title(apiErrorType.getTitle())
+				.type(errorType.getUri())
+				.title(errorType.getTitle())
 				.detail(detail);
 	}
 	
