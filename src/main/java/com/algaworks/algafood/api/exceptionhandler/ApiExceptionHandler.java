@@ -1,7 +1,5 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
-import java.time.LocalDateTime;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +16,30 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(EntidadeNaoEncontradaException.class)
-	public ResponseEntity<?> tratarEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex,
+	public ResponseEntity<?> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex,
 			WebRequest request) {
-		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		ApiErrorType apiErrorType = ApiErrorType.ENTIDADE_NAO_ENCONTRADA;
+		String detail = ex.getMessage();
+		
+		ApiError error = createApiErrorBuilder(status, apiErrorType, detail).build();
+		
+//		ApiError error = ApiError.builder().status(status.value())
+//				.type("https://algafood.com.br/entidade-nao-encontrada")
+//				.title("Entidade não encontrada")
+//				.detail(ex.getMessage())
+//				.build();
+		
+		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
 
 	@ExceptionHandler(EntidadeEmUsoException.class)
-	public ResponseEntity<?> tratarEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
+	public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
 		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
 	}
 
 	@ExceptionHandler(NegocioException.class)
-	public ResponseEntity<?> tratarNegocioNaoEncontradaException(NegocioException ex, WebRequest request) {
+	public ResponseEntity<?> handleNegocioNaoEncontradaException(NegocioException ex, WebRequest request) {
 		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
 
@@ -37,12 +47,26 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
 		if (body == null) {
-			body = ApiError.builder().dataHora(LocalDateTime.now()).mensagem(status.getReasonPhrase()).build();			
+			body = ApiError.builder()
+					.status(status.value())
+					.title(status.getReasonPhrase())
+					.build();
 		} else if (body instanceof String) {
-			body = ApiError.builder().dataHora(LocalDateTime.now()).mensagem((String) body).build();
+			body = ApiError.builder()
+					.status(status.value())
+					.title((String) body)
+					.build();
 		}
 
 		return super.handleExceptionInternal(ex, body, headers, status, request);
 	}
-
+	
+	private ApiError.ApiErrorBuilder createApiErrorBuilder(HttpStatus status, ApiErrorType apiErrorType, String detail) {
+		return ApiError.builder()
+				.status(status.value())
+				.type(apiErrorType.getUri())
+				.title(apiErrorType.getTitle())
+				.detail(detail);
+	}
+	
 }
