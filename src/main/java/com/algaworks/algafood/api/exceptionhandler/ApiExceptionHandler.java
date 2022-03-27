@@ -24,23 +24,29 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		
 		ApiError error = createApiErrorBuilder(status, apiErrorType, detail).build();
 		
-//		ApiError error = ApiError.builder().status(status.value())
-//				.type("https://algafood.com.br/entidade-nao-encontrada")
-//				.title("Entidade não encontrada")
-//				.detail(ex.getMessage())
-//				.build();
-		
 		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
 
 	@ExceptionHandler(EntidadeEmUsoException.class)
 	public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
-		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
+		HttpStatus status = HttpStatus.CONFLICT;
+		ApiErrorType apiErrorType = ApiErrorType.ENTIDADE_EM_USO;
+		String detail = ex.getMessage();
+		
+		ApiError error = createApiErrorBuilder(status, apiErrorType, detail).build();
+		
+		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
 
 	@ExceptionHandler(NegocioException.class)
-	public ResponseEntity<?> handleNegocioNaoEncontradaException(NegocioException ex, WebRequest request) {
-		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+	public ResponseEntity<?> handleNegocioException(NegocioException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		ApiErrorType apiErrorType = ApiErrorType.ERRO_NEGOCIO;
+		String detail = ex.getMessage();
+		
+		ApiError error = createApiErrorBuilder(status, apiErrorType, detail).build();
+		
+		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
 
 	@Override
