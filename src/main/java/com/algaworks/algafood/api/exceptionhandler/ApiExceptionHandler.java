@@ -152,7 +152,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		ApiErrorType errorType = ApiErrorType.ERRO_NEGOCIO;
 		String detail = ex.getMessage();
-
+		
 		ApiError error = createApiErrorBuilder(status, errorType, detail)
 				.userMessage(detail)
 				.build();
@@ -192,6 +192,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 					.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
 					.timestamp(LocalDateTime.now())
 					.build();
+			
 		}
 
 		return super.handleExceptionInternal(ex, body, headers, status, request);
