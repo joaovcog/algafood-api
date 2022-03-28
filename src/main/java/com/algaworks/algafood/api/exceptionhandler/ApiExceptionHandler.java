@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,8 @@ import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+	private static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "Ocorreu um erro interno inesperado no sistema. Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
+
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -40,7 +43,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		ApiErrorType errorType = ApiErrorType.MENSAGEM_ILEGIVEL;
 		String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe.";
 
-		ApiError error = createApiErrorBuilder(status, errorType, detail).build();
+		ApiError error = createApiErrorBuilder(status, errorType, detail)
+				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+				.build();
 
 		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
@@ -55,7 +60,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 						+ "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
 				path, ex.getValue(), ex.getTargetType().getSimpleName());
 
-		ApiError error = createApiErrorBuilder(status, errorType, detail).build();
+		ApiError error = createApiErrorBuilder(status, errorType, detail)
+				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+				.build();
 
 		return handleExceptionInternal(ex, error, headers, status, request);
 	}
@@ -68,7 +75,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		String detail = String
 				.format("A propriedade '%s' não existe. Corrija ou remova essa propriedade e tente novamente.", path);
 
-		ApiError error = createApiErrorBuilder(status, errorType, detail).build();
+		ApiError error = createApiErrorBuilder(status, errorType, detail)
+				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+				.build();
 
 		return handleExceptionInternal(ex, error, headers, status, request);
 	}
@@ -91,7 +100,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				"O parâmetro de URL '%s' recebeu o valor '%s', que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
 				ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
 
-		ApiError error = createApiErrorBuilder(status, errorType, detail).build();
+		ApiError error = createApiErrorBuilder(status, errorType, detail)
+				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+				.build();
 
 		return handleExceptionInternal(ex, error, headers, status, request);
 	}
@@ -102,7 +113,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		ApiErrorType errorType = ApiErrorType.RECURSO_NAO_ENCONTRADO;
 		String detail = String.format("O recurso '%s', que você tentou acessar, é inexistente.", ex.getRequestURL());
 		
-		ApiError error = createApiErrorBuilder(status, errorType, detail).build();
+		ApiError error = createApiErrorBuilder(status, errorType, detail)
+				.userMessage(detail)
+				.build();
 		
 		return handleExceptionInternal(ex, error, headers, status, request);
 	}
@@ -114,7 +127,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		ApiErrorType errorType = ApiErrorType.RECURSO_NAO_ENCONTRADO;
 		String detail = ex.getMessage();
 
-		ApiError error = createApiErrorBuilder(status, errorType, detail).build();
+		ApiError error = createApiErrorBuilder(status, errorType, detail)
+				.userMessage(detail)
+				.build();
 
 		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
@@ -125,7 +140,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		ApiErrorType errorType = ApiErrorType.ENTIDADE_EM_USO;
 		String detail = ex.getMessage();
 
-		ApiError error = createApiErrorBuilder(status, errorType, detail).build();
+		ApiError error = createApiErrorBuilder(status, errorType, detail)
+				.userMessage(detail)
+				.build();
 
 		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
@@ -136,7 +153,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		ApiErrorType errorType = ApiErrorType.ERRO_NEGOCIO;
 		String detail = ex.getMessage();
 
-		ApiError error = createApiErrorBuilder(status, errorType, detail).build();
+		ApiError error = createApiErrorBuilder(status, errorType, detail)
+				.userMessage(detail)
+				.build();
 
 		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
@@ -145,11 +164,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 		ApiErrorType errorType = ApiErrorType.ERRO_DE_SISTEMA;
-		String detail = "Ocorreu um erro interno inesperado no sistema. Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
+		String detail = MSG_ERRO_GENERICA_USUARIO_FINAL;
 		
 		ex.printStackTrace();
 		
-		ApiError error = createApiErrorBuilder(status, errorType, detail).build();
+		ApiError error = createApiErrorBuilder(status, errorType, detail)
+				.userMessage(detail)
+				.build();
 		
 		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
@@ -158,17 +179,31 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
 		if (body == null) {
-			body = ApiError.builder().status(status.value()).title(status.getReasonPhrase()).build();
+			body = ApiError.builder()
+					.status(status.value())
+					.title(status.getReasonPhrase())
+					.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+					.timestamp(LocalDateTime.now())
+					.build();
 		} else if (body instanceof String) {
-			body = ApiError.builder().status(status.value()).title((String) body).build();
+			body = ApiError.builder()
+					.status(status.value())
+					.title((String) body)
+					.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+					.timestamp(LocalDateTime.now())
+					.build();
 		}
 
 		return super.handleExceptionInternal(ex, body, headers, status, request);
 	}
 
 	private ApiError.ApiErrorBuilder createApiErrorBuilder(HttpStatus status, ApiErrorType errorType, String detail) {
-		return ApiError.builder().status(status.value()).type(errorType.getUri()).title(errorType.getTitle())
-				.detail(detail);
+		return ApiError.builder()
+				.status(status.value())
+				.type(errorType.getUri())
+				.title(errorType.getTitle())
+				.detail(detail)
+				.timestamp(LocalDateTime.now());
 	}
 
 	private String joinPath(List<Reference> references) {
