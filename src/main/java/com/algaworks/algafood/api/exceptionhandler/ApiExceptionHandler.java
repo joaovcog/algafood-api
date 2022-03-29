@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -27,6 +28,7 @@ import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+	private static final String MSG_DADOS_INVALIDOS = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
 	private static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "Ocorreu um erro interno inesperado no sistema. Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
 
 	@Override
@@ -49,7 +51,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
-
+	
 	private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
 		String path = joinPath(ex.getPath());
@@ -104,6 +106,26 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
 				.build();
 
+		return handleExceptionInternal(ex, error, headers, status, request);
+	}
+	
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		ApiErrorType errorType = ApiErrorType.DADOS_INVALIDOS;
+		String detail = MSG_DADOS_INVALIDOS;
+
+		List<ApiError.Field> errorFields = ex.getBindingResult().getFieldErrors().stream()
+				.map(fieldError -> ApiError.Field.builder()
+						.name(fieldError.getField())
+						.userMessage(fieldError.getDefaultMessage()).build())
+				.collect(Collectors.toList());
+		
+		ApiError error = createApiErrorBuilder(status, errorType, detail)
+				.userMessage(detail)
+				.fields(errorFields)
+				.build();
+		
 		return handleExceptionInternal(ex, error, headers, status, request);
 	}
 	
