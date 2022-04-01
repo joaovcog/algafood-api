@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -117,18 +118,24 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		ApiErrorType errorType = ApiErrorType.DADOS_INVALIDOS;
 		String detail = MSG_DADOS_INVALIDOS;
 
-		List<ApiError.Field> errorFields = ex.getBindingResult().getFieldErrors().stream()
-				.map(fieldError -> {
-					String message = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+		List<ApiError.Object> errorObjects = ex.getBindingResult().getAllErrors().stream()
+				.map(objectError -> {
+					String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
 					
-					return ApiError.Field.builder()
-							.name(fieldError.getField())
+					String name = objectError.getObjectName();
+					
+					if (objectError instanceof FieldError) {
+						name = ((FieldError) objectError).getField();
+					}
+					
+					return ApiError.Object.builder()
+							.name(name)
 							.userMessage(message)
 							.build();
 				})
 				.collect(Collectors.toList());
 
-		ApiError error = createApiErrorBuilder(status, errorType, detail).userMessage(detail).fields(errorFields)
+		ApiError error = createApiErrorBuilder(status, errorType, detail).userMessage(detail).objects(errorObjects)
 				.build();
 
 		return handleExceptionInternal(ex, error, headers, status, request);
