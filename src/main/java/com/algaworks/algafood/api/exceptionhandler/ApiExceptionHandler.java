@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -37,7 +38,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private MessageSource messageSource;
-	
+
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -115,30 +116,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		ApiErrorType errorType = ApiErrorType.DADOS_INVALIDOS;
-		String detail = MSG_DADOS_INVALIDOS;
-
-		List<ApiError.Object> errorObjects = ex.getBindingResult().getAllErrors().stream()
-				.map(objectError -> {
-					String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
-					
-					String name = objectError.getObjectName();
-					
-					if (objectError instanceof FieldError) {
-						name = ((FieldError) objectError).getField();
-					}
-					
-					return ApiError.Object.builder()
-							.name(name)
-							.userMessage(message)
-							.build();
-				})
-				.collect(Collectors.toList());
-
-		ApiError error = createApiErrorBuilder(status, errorType, detail).userMessage(detail).objects(errorObjects)
-				.build();
-
-		return handleExceptionInternal(ex, error, headers, status, request);
+		return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
 	}
 
 	@Override
@@ -211,6 +189,35 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 
 		return super.handleExceptionInternal(ex, body, headers, status, request);
+	}
+	
+	private ResponseEntity<Object> handleValidationInternal(Exception ex, BindingResult bindingResult,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		ApiErrorType errorType = ApiErrorType.DADOS_INVALIDOS;
+		String detail = MSG_DADOS_INVALIDOS;
+
+		List<ApiError.Object> errorObjects = extractErrors(bindingResult);
+
+		ApiError error = createApiErrorBuilder(status, errorType, detail)
+				.userMessage(detail)
+				.objects(errorObjects)
+				.build();
+
+		return handleExceptionInternal(ex, error, headers, status, request);
+	}
+	
+	private List<ApiError.Object> extractErrors(BindingResult bindingResult) {
+		return bindingResult.getAllErrors().stream().map(objectError -> {
+			String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
+
+			String name = objectError.getObjectName();
+
+			if (objectError instanceof FieldError) {
+				name = ((FieldError) objectError).getField();
+			}
+
+			return ApiError.Object.builder().name(name).userMessage(message).build();
+		}).collect(Collectors.toList());
 	}
 
 	private ApiError.ApiErrorBuilder createApiErrorBuilder(HttpStatus status, ApiErrorType errorType, String detail) {
