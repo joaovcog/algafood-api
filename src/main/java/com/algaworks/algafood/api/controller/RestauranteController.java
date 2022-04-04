@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
-import com.algaworks.algafood.api.model.RestauranteDTO;
-import com.algaworks.algafood.api.model.input.RestauranteInputDTO;
+import com.algaworks.algafood.api.model.RestauranteOutputDto;
+import com.algaworks.algafood.api.model.input.RestauranteInputDto;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -40,12 +40,12 @@ public class RestauranteController {
 	private RestauranteDtoAssembler restauranteDtoAssembler;
 	
 	@GetMapping
-	public List<RestauranteDTO> listar() {
+	public List<RestauranteOutputDto> listar() {
 		return restauranteDtoAssembler.toCollectionModel(restauranteRepository.findAll());
 	}
 
 	@GetMapping("/{codigo}")
-	public RestauranteDTO buscar(@PathVariable Long codigo) {
+	public RestauranteOutputDto buscar(@PathVariable Long codigo) {
 		Restaurante restaurante = restauranteService.buscarOuFalhar(codigo);
 		
 		return restauranteDtoAssembler.toModel(restaurante);
@@ -53,7 +53,7 @@ public class RestauranteController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public RestauranteDTO adicionar(@RequestBody @Valid RestauranteInputDTO restauranteInput) {
+	public RestauranteOutputDto adicionar(@RequestBody @Valid RestauranteInputDto restauranteInput) {
 		try {
 			Restaurante restaurante = toDomainObject(restauranteInput);
 			
@@ -64,7 +64,7 @@ public class RestauranteController {
 	}
 
 	@PutMapping("/{codigo}")
-	public RestauranteDTO atualizar(@PathVariable Long codigo, @RequestBody @Valid RestauranteInputDTO restauranteInput) {
+	public RestauranteOutputDto atualizar(@PathVariable Long codigo, @RequestBody @Valid RestauranteInputDto restauranteInput) {
 		Restaurante restaurante = toDomainObject(restauranteInput);
 		Restaurante restauranteAtual = restauranteService.buscarOuFalhar(codigo);
 
@@ -77,7 +77,7 @@ public class RestauranteController {
 		}
 	}
 	
-	private Restaurante toDomainObject(RestauranteInputDTO restauranteInput) {
+	private Restaurante toDomainObject(RestauranteInputDto restauranteInput) {
 		Restaurante restaurante = new Restaurante();
 		restaurante.setNome(restauranteInput.getNome());
 		restaurante.setTaxaFrete(restauranteInput.getTaxaFrete());

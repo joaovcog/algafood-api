@@ -5,21 +5,21 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.algaworks.algafood.api.model.CozinhaDTO;
-import com.algaworks.algafood.api.model.RestauranteDTO;
+import com.algaworks.algafood.api.model.CozinhaOutputDto;
+import com.algaworks.algafood.api.model.RestauranteOutputDto;
 import com.algaworks.algafood.domain.model.Restaurante;
 
 @Component
 public class RestauranteDtoAssembler {
 	
-	public RestauranteDTO toModel(Restaurante restaurante) {
-		RestauranteDTO restauranteDTO = new RestauranteDTO();
+	public RestauranteOutputDto toModel(Restaurante restaurante) {
+		RestauranteOutputDto restauranteDTO = new RestauranteOutputDto();
 
 		restauranteDTO.setCodigo(restaurante.getCodigo());
 		restauranteDTO.setNome(restaurante.getNome());
 		restauranteDTO.setTaxaFrete(restaurante.getTaxaFrete());
 
-		CozinhaDTO cozinhaDTO = new CozinhaDTO();
+		CozinhaOutputDto cozinhaDTO = new CozinhaOutputDto();
 		cozinhaDTO.setCodigo(restaurante.getCozinha().getCodigo());
 		cozinhaDTO.setNome(restaurante.getCozinha().getNome());
 
@@ -28,7 +28,7 @@ public class RestauranteDtoAssembler {
 		return restauranteDTO;
 	}
 
-	public List<RestauranteDTO> toCollectionModel(List<Restaurante> restaurantes) {
+	public List<RestauranteOutputDto> toCollectionModel(List<Restaurante> restaurantes) {
 		return restaurantes.stream().map(restaurante -> toModel(restaurante)).collect(Collectors.toList());
 	}
 	

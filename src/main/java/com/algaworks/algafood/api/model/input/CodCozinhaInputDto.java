@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CodCozinhaInputDTO {
+public class CodCozinhaInputDto {
 
 	@NotNull
 	private Long codigo;
