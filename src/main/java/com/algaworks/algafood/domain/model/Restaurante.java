@@ -21,13 +21,10 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
-import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.algaworks.algafood.core.validation.Groups;
 import com.algaworks.algafood.core.validation.ValorZeroIncluiDescricao;
 
 import lombok.Data;
@@ -55,7 +52,7 @@ public class Restaurante {
 	private BigDecimal taxaFrete;
 	
 	@Valid
-	@ConvertGroup(from = Default.class, to = Groups.CodCozinha.class)
+	//@ConvertGroup(from = Default.class, to = Groups.CodCozinha.class)
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "cod_cozinha", nullable = false)

@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -16,8 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.model.CozinhaDTO;
+import com.algaworks.algafood.api.model.RestauranteDTO;
+import com.algaworks.algafood.api.model.input.RestauranteInputDTO;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.RestauranteService;
@@ -32,40 +37,77 @@ public class RestauranteController {
 	@Autowired
 	private RestauranteService restauranteService;
 	
-//	@Autowired
-//	private SmartValidator validator;
-
 	@GetMapping
-	public List<Restaurante> listar() {
-		return restauranteRepository.findAll();
+	public List<RestauranteDTO> listar() {
+		return toCollectionModel(restauranteRepository.findAll());
 	}
 
 	@GetMapping("/{codigo}")
-	public Restaurante buscar(@PathVariable Long codigo) {
-		return restauranteService.buscarOuFalhar(codigo);
+	public RestauranteDTO buscar(@PathVariable Long codigo) {
+		Restaurante restaurante = restauranteService.buscarOuFalhar(codigo);
+		
+		return toModel(restaurante);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
+	public RestauranteDTO adicionar(@RequestBody @Valid RestauranteInputDTO restauranteInput) {
 		try {
-			return restauranteService.salvar(restaurante);
+			Restaurante restaurante = toDomainObject(restauranteInput);
+			
+			return toModel(restauranteService.salvar(restaurante));
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
 
 	@PutMapping("/{codigo}")
-	public Restaurante atualizar(@PathVariable Long codigo, @RequestBody @Valid Restaurante restaurante) {
+	public RestauranteDTO atualizar(@PathVariable Long codigo, @RequestBody @Valid RestauranteInputDTO restauranteInput) {
+		Restaurante restaurante = toDomainObject(restauranteInput);
 		Restaurante restauranteAtual = restauranteService.buscarOuFalhar(codigo);
 
 		BeanUtils.copyProperties(restaurante, restauranteAtual, "codigo", "formasPagamentos", "endereco",
 				"dataCadastro", "produtos");
 		try {
-			return restauranteService.salvar(restauranteAtual);
+			return toModel(restauranteService.salvar(restauranteAtual));
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
+	}
+	
+	private RestauranteDTO toModel(Restaurante restaurante) {
+		RestauranteDTO restauranteDTO = new RestauranteDTO();
+		
+		restauranteDTO.setCodigo(restaurante.getCodigo());
+		restauranteDTO.setNome(restaurante.getNome());
+		restauranteDTO.setTaxaFrete(restaurante.getTaxaFrete());
+		
+		CozinhaDTO cozinhaDTO = new CozinhaDTO();
+		cozinhaDTO.setCodigo(restaurante.getCozinha().getCodigo());
+		cozinhaDTO.setNome(restaurante.getCozinha().getNome());
+		
+		restauranteDTO.setCozinha(cozinhaDTO);
+		
+		return restauranteDTO;
+	}
+	
+	private List<RestauranteDTO> toCollectionModel(List<Restaurante> restaurantes) {
+		return restaurantes.stream()
+				.map(restaurante -> toModel(restaurante))
+				.collect(Collectors.toList());
+	}
+	
+	private Restaurante toDomainObject(RestauranteInputDTO restauranteInput) {
+		Restaurante restaurante = new Restaurante();
+		restaurante.setNome(restauranteInput.getNome());
+		restaurante.setTaxaFrete(restauranteInput.getTaxaFrete());
+		
+		Cozinha cozinha = new Cozinha();
+		cozinha.setCodigo(restauranteInput.getCozinha().getCodigo());
+		
+		restaurante.setCozinha(cozinha);
+		
+		return restaurante;
 	}
 
 	/*
