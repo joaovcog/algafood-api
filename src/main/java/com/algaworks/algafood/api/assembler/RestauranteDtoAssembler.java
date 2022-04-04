@@ -11,8 +11,8 @@ import com.algaworks.algafood.domain.model.Restaurante;
 
 @Component
 public class RestauranteDtoAssembler {
-	
-	public RestauranteOutputDto toModel(Restaurante restaurante) {
+	//TODO melhorar nomes dos métodos
+	public RestauranteOutputDto toOutputDtoFromModel(Restaurante restaurante) {
 		RestauranteOutputDto restauranteDTO = new RestauranteOutputDto();
 
 		restauranteDTO.setCodigo(restaurante.getCodigo());
@@ -28,8 +28,8 @@ public class RestauranteDtoAssembler {
 		return restauranteDTO;
 	}
 
-	public List<RestauranteOutputDto> toCollectionModel(List<Restaurante> restaurantes) {
-		return restaurantes.stream().map(restaurante -> toModel(restaurante)).collect(Collectors.toList());
+	public List<RestauranteOutputDto> toCollectionOutputDtoFromModel(List<Restaurante> restaurantes) {
+		return restaurantes.stream().map(restaurante -> toOutputDtoFromModel(restaurante)).collect(Collectors.toList());
 	}
 	
 }

@@ -41,14 +41,14 @@ public class RestauranteController {
 	
 	@GetMapping
 	public List<RestauranteOutputDto> listar() {
-		return restauranteDtoAssembler.toCollectionModel(restauranteRepository.findAll());
+		return restauranteDtoAssembler.toCollectionOutputDtoFromModel(restauranteRepository.findAll());
 	}
 
 	@GetMapping("/{codigo}")
 	public RestauranteOutputDto buscar(@PathVariable Long codigo) {
 		Restaurante restaurante = restauranteService.buscarOuFalhar(codigo);
 		
-		return restauranteDtoAssembler.toModel(restaurante);
+		return restauranteDtoAssembler.toOutputDtoFromModel(restaurante);
 	}
 
 	@PostMapping
@@ -57,7 +57,7 @@ public class RestauranteController {
 		try {
 			Restaurante restaurante = toDomainObject(restauranteInput);
 			
-			return restauranteDtoAssembler.toModel(restauranteService.salvar(restaurante));
+			return restauranteDtoAssembler.toOutputDtoFromModel(restauranteService.salvar(restaurante));
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
@@ -71,7 +71,7 @@ public class RestauranteController {
 		BeanUtils.copyProperties(restaurante, restauranteAtual, "codigo", "formasPagamentos", "endereco",
 				"dataCadastro", "produtos");
 		try {
-			return restauranteDtoAssembler.toModel(restauranteService.salvar(restauranteAtual));
+			return restauranteDtoAssembler.toOutputDtoFromModel(restauranteService.salvar(restauranteAtual));
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
