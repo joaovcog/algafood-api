@@ -10,8 +10,7 @@ import com.algaworks.algafood.api.model.RestauranteOutputDto;
 import com.algaworks.algafood.domain.model.Restaurante;
 
 @Component
-public class RestauranteDtoAssembler {
-	//TODO melhorar nomes dos métodos
+public class RestauranteOutputDtoAssembler {
 	public RestauranteOutputDto toOutputDtoFromModel(Restaurante restaurante) {
 		RestauranteOutputDto restauranteDTO = new RestauranteOutputDto();
 

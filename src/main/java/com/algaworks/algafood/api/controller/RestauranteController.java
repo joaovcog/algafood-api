@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
+import com.algaworks.algafood.api.assembler.RestauranteInputDtoDisassembler;
+import com.algaworks.algafood.api.assembler.RestauranteOutputDtoAssembler;
 import com.algaworks.algafood.api.model.RestauranteOutputDto;
 import com.algaworks.algafood.api.model.input.RestauranteInputDto;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
-import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.RestauranteService;
@@ -37,27 +37,30 @@ public class RestauranteController {
 	private RestauranteService restauranteService;
 	
 	@Autowired
-	private RestauranteDtoAssembler restauranteDtoAssembler;
+	private RestauranteOutputDtoAssembler restauranteOutputDtoAssembler;
+	
+	@Autowired
+	private RestauranteInputDtoDisassembler restauranteInputDtoDisassembler;
 	
 	@GetMapping
 	public List<RestauranteOutputDto> listar() {
-		return restauranteDtoAssembler.toCollectionOutputDtoFromModel(restauranteRepository.findAll());
+		return restauranteOutputDtoAssembler.toCollectionOutputDtoFromModel(restauranteRepository.findAll());
 	}
 
 	@GetMapping("/{codigo}")
 	public RestauranteOutputDto buscar(@PathVariable Long codigo) {
 		Restaurante restaurante = restauranteService.buscarOuFalhar(codigo);
 		
-		return restauranteDtoAssembler.toOutputDtoFromModel(restaurante);
+		return restauranteOutputDtoAssembler.toOutputDtoFromModel(restaurante);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public RestauranteOutputDto adicionar(@RequestBody @Valid RestauranteInputDto restauranteInput) {
 		try {
-			Restaurante restaurante = toDomainObject(restauranteInput);
+			Restaurante restaurante = restauranteInputDtoDisassembler.toDomainObjectFromInputDto(restauranteInput);
 			
-			return restauranteDtoAssembler.toOutputDtoFromModel(restauranteService.salvar(restaurante));
+			return restauranteOutputDtoAssembler.toOutputDtoFromModel(restauranteService.salvar(restaurante));
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
@@ -65,29 +68,16 @@ public class RestauranteController {
 
 	@PutMapping("/{codigo}")
 	public RestauranteOutputDto atualizar(@PathVariable Long codigo, @RequestBody @Valid RestauranteInputDto restauranteInput) {
-		Restaurante restaurante = toDomainObject(restauranteInput);
+		Restaurante restaurante = restauranteInputDtoDisassembler.toDomainObjectFromInputDto(restauranteInput);
 		Restaurante restauranteAtual = restauranteService.buscarOuFalhar(codigo);
 
 		BeanUtils.copyProperties(restaurante, restauranteAtual, "codigo", "formasPagamentos", "endereco",
 				"dataCadastro", "produtos");
 		try {
-			return restauranteDtoAssembler.toOutputDtoFromModel(restauranteService.salvar(restauranteAtual));
+			return restauranteOutputDtoAssembler.toOutputDtoFromModel(restauranteService.salvar(restauranteAtual));
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
-	}
-	
-	private Restaurante toDomainObject(RestauranteInputDto restauranteInput) {
-		Restaurante restaurante = new Restaurante();
-		restaurante.setNome(restauranteInput.getNome());
-		restaurante.setTaxaFrete(restauranteInput.getTaxaFrete());
-		
-		Cozinha cozinha = new Cozinha();
-		cozinha.setCodigo(restauranteInput.getCozinha().getCodigo());
-		
-		restaurante.setCozinha(cozinha);
-		
-		return restaurante;
 	}
 
 	/*
