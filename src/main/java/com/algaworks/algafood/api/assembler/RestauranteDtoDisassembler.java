@@ -7,7 +7,7 @@ import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 
 @Component
-public class RestauranteInputDtoDisassembler {
+public class RestauranteDtoDisassembler {
 
 	public Restaurante toDomainObjectFromInputDto(RestauranteInputDto restauranteInput) {
 		Restaurante restaurante = new Restaurante();

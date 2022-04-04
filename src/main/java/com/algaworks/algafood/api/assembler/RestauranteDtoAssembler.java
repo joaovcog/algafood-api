@@ -10,7 +10,7 @@ import com.algaworks.algafood.api.model.RestauranteOutputDto;
 import com.algaworks.algafood.domain.model.Restaurante;
 
 @Component
-public class RestauranteOutputDtoAssembler {
+public class RestauranteDtoAssembler {
 	public RestauranteOutputDto toOutputDtoFromModel(Restaurante restaurante) {
 		RestauranteOutputDto restauranteDTO = new RestauranteOutputDto();
 
