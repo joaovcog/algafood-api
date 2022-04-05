@@ -16,8 +16,8 @@ public class CidadeDtoAssembler {
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	public CidadeOutputDto toOutputDtoFromModel(Cidade estado) {
-		return modelMapper.map(estado, CidadeOutputDto.class);
+	public CidadeOutputDto toOutputDtoFromModel(Cidade cidade) {
+		return modelMapper.map(cidade, CidadeOutputDto.class);
 	}
 
 	public List<CidadeOutputDto> toCollectionOutputDtoFromModel(List<Cidade> cidades) {

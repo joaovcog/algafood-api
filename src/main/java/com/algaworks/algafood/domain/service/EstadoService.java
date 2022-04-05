@@ -32,6 +32,7 @@ public class EstadoService {
 	public void excluir(Long codigo) {
 		try {
 			estadoRepository.deleteById(codigo);
+			estadoRepository.flush();
 		} catch (EmptyResultDataAccessException e) {
 			throw new EstadoNaoEncontradoException(codigo);
 		} catch (DataIntegrityViolationException e) {
