@@ -1,4 +1,4 @@
-package com.algaworks.algafood.api.assembler;
+package com.algaworks.algafood.api.assembler.old;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

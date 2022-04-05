@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.CozinhaDtoAssembler;
-import com.algaworks.algafood.api.assembler.CozinhaDtoDisassembler;
 import com.algaworks.algafood.api.model.CozinhaOutputDto;
 import com.algaworks.algafood.api.model.input.CozinhaInputDto;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -36,37 +35,34 @@ public class CozinhaController {
 	
 	@Autowired
 	private CozinhaDtoAssembler cozinhaDtoAssembler;
-	
-	@Autowired
-	private CozinhaDtoDisassembler cozinhaDtoDisassembler;
 
 	@GetMapping
 	public List<CozinhaOutputDto> listar() {
-		return cozinhaDtoAssembler.toCollectionOutputDtoFromModel(cozinhaRepository.findAll());
+		return cozinhaDtoAssembler.toCollectionOutputDtoFromDomainEntity(cozinhaRepository.findAll(), CozinhaOutputDto.class);
 	}
 
 	@GetMapping("/{codigo}")
 	public CozinhaOutputDto buscar(@PathVariable Long codigo) {
 		Cozinha cozinha = cozinhaService.buscarOuFalhar(codigo);
 		
-		return cozinhaDtoAssembler.toOutputDtoFromModel(cozinha);
+		return cozinhaDtoAssembler.toOutputDtoFromDomainEntity(cozinha, CozinhaOutputDto.class);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CozinhaOutputDto adicionar(@RequestBody @Valid CozinhaInputDto cozinhaInput) { // o RequestBody vincula o corpo da requisição no parâmetro cozinha
-		Cozinha cozinha = cozinhaDtoDisassembler.toDomainObjectFromInputDto(cozinhaInput);
+		Cozinha cozinha = cozinhaDtoAssembler.toDomainObjectFromInputDto(cozinhaInput, Cozinha.class);
 		
-		return cozinhaDtoAssembler.toOutputDtoFromModel(cozinhaService.salvar(cozinha));
+		return cozinhaDtoAssembler.toOutputDtoFromDomainEntity(cozinhaService.salvar(cozinha), CozinhaOutputDto.class);
 	}
 
 	@PutMapping("/{codigo}")
 	public CozinhaOutputDto atualizar(@PathVariable Long codigo, @RequestBody @Valid CozinhaInputDto cozinhaInput) {
 		Cozinha cozinhaAtual = cozinhaService.buscarOuFalhar(codigo);
 		
-		cozinhaDtoDisassembler.copyFromInputDtoToDomainObject(cozinhaInput, cozinhaAtual);
+		cozinhaDtoAssembler.copyFromInputDtoToDomainObject(cozinhaInput, cozinhaAtual);
 
-		return cozinhaDtoAssembler.toOutputDtoFromModel(cozinhaService.salvar(cozinhaAtual));
+		return cozinhaDtoAssembler.toOutputDtoFromDomainEntity(cozinhaService.salvar(cozinhaAtual), CozinhaOutputDto.class);
 	}
 
 	@DeleteMapping("/{codigo}")

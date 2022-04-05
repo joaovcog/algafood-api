@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.EstadoDtoAssembler;
-import com.algaworks.algafood.api.assembler.EstadoDtoDisassembler;
 import com.algaworks.algafood.api.model.EstadoOutputDto;
 import com.algaworks.algafood.api.model.input.EstadoInputDto;
 import com.algaworks.algafood.domain.model.Estado;
@@ -37,36 +36,33 @@ public class EstadoController {
 	@Autowired
 	private EstadoDtoAssembler estadoDtoAssembler;
 	
-	@Autowired
-	private EstadoDtoDisassembler estadoDtoDisassembler;
-
 	@GetMapping
 	public List<EstadoOutputDto> listar() {
-		return estadoDtoAssembler.toCollectionOutputDtoFromModel(estadoRepository.findAll());
+		return estadoDtoAssembler.toCollectionOutputDtoFromDomainEntity(estadoRepository.findAll(), EstadoOutputDto.class);
 	}
 
 	@GetMapping("/{codigo}")
 	public EstadoOutputDto buscar(@PathVariable Long codigo) {
 		Estado estado = estadoService.buscarOuFalhar(codigo);
 		
-		return estadoDtoAssembler.toOutputDtoFromModel(estado);
+		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estado, EstadoOutputDto.class);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public EstadoOutputDto adicionar(@RequestBody @Valid EstadoInputDto estadoInput) {
-		Estado estado = estadoDtoDisassembler.toDomainObjectFromInputDto(estadoInput);
+		Estado estado = estadoDtoAssembler.toDomainObjectFromInputDto(estadoInput, Estado.class);
 		
-		return estadoDtoAssembler.toOutputDtoFromModel(estadoService.salvar(estado));
+		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estadoService.salvar(estado), EstadoOutputDto.class);
 	}
 
 	@PutMapping("/{codigo}")
 	public EstadoOutputDto atualizar(@PathVariable Long codigo, @RequestBody @Valid EstadoInputDto estadoInput) {
 		Estado estadoAtual = estadoService.buscarOuFalhar(codigo);
 		
-		estadoDtoDisassembler.copyFromInputDtoToDomainObject(estadoInput, estadoAtual);
+		estadoDtoAssembler.copyFromInputDtoToDomainObject(estadoInput, estadoAtual);
 
-		return estadoDtoAssembler.toOutputDtoFromModel(estadoService.salvar(estadoAtual));
+		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estadoService.salvar(estadoAtual), EstadoOutputDto.class);
 	}
 
 	@DeleteMapping("/{codigo}")
