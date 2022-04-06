@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
 import com.algaworks.algafood.api.model.RestauranteOutputDto;
 import com.algaworks.algafood.api.model.input.RestauranteInputDto;
+import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -57,7 +58,7 @@ public class RestauranteController {
 			Restaurante restaurante = restauranteDtoAssembler.toDomainObjectFromInputDto(restauranteInput, Restaurante.class);
 			
 			return restauranteDtoAssembler.toOutputDtoFromDomainEntity(restauranteService.salvar(restaurante), RestauranteOutputDto.class);
-		} catch (CozinhaNaoEncontradaException e) {
+		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
@@ -73,7 +74,7 @@ public class RestauranteController {
 		
 		try {
 			return restauranteDtoAssembler.toOutputDtoFromDomainEntity(restauranteService.salvar(restauranteAtual), RestauranteOutputDto.class);
-		} catch (CozinhaNaoEncontradaException e) {
+		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
