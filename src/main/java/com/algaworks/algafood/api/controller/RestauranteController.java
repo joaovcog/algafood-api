@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,18 +64,30 @@ public class RestauranteController {
 
 	@PutMapping("/{codigo}")
 	public RestauranteOutputDto atualizar(@PathVariable Long codigo, @RequestBody @Valid RestauranteInputDto restauranteInput) {
-		Restaurante restaurante = restauranteDtoAssembler.toDomainObjectFromInputDto(restauranteInput, Restaurante.class);
+		//Restaurante restaurante = restauranteDtoAssembler.toDomainObjectFromInputDto(restauranteInput, Restaurante.class);
 		Restaurante restauranteAtual = restauranteService.buscarOuFalhar(codigo);
 
-		//restauranteDtoAssembler.copyFromInputDtoToDomainObject(restauranteInput, restauranteAtual);
+		restauranteDtoAssembler.copyFromInputDtoToDomainObject(restauranteInput, restauranteAtual);
 		
-		BeanUtils.copyProperties(restaurante, restauranteAtual, "codigo", "formasPagamentos", "endereco",
-				"dataCadastro", "produtos");
+		//BeanUtils.copyProperties(restaurante, restauranteAtual, "codigo", "formasPagamentos", "endereco", "dataCadastro", "produtos");
+		
 		try {
 			return restauranteDtoAssembler.toOutputDtoFromDomainEntity(restauranteService.salvar(restauranteAtual), RestauranteOutputDto.class);
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
+	}
+	
+	@PutMapping("/{codRestaurante}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativar(@PathVariable Long codRestaurante) {
+		restauranteService.ativar(codRestaurante);
+	}
+	
+	@DeleteMapping("/{codRestaurante}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativar(@PathVariable Long codRestaurante) {
+		restauranteService.inativar(codRestaurante);
 	}
 
 	/*

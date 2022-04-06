@@ -45,13 +45,13 @@ insert into cidades (nome, cod_estado) values ('Goiânia', 1);
 insert into cidades (nome, cod_estado) values ('Curitiba', 4);
 
 
-insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao, endereco_cod_cidade, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro) values ('Bar e Restaurante do Goiano', 7, 1, utc_timestamp, utc_timestamp, 1, '75500-000', 'Avenida Afonso Pena', '2200', 'Centro');
-insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao) values ('Massas Gourmet', 5.5, 2, utc_timestamp, utc_timestamp);
-insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao) values ('Comida Mineira', 0, 1, utc_timestamp, utc_timestamp);
-insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao) values ('Java Steakhouse', 12, 3, utc_timestamp, utc_timestamp);
-insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao) values ('Lanchonete do Tio Sam', 11, 1, utc_timestamp, utc_timestamp);
-insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao) values ('Bar da Maria', 6, 1, utc_timestamp, utc_timestamp);
-insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao) values ('Chinese Express', 3, 3, utc_timestamp, utc_timestamp);
+insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao, endereco_cod_cidade, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro, ativo) values ('Bar e Restaurante do Goiano', 7, 1, utc_timestamp, utc_timestamp, 1, '75500-000', 'Avenida Afonso Pena', '2200', 'Centro', true);
+insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao, ativo) values ('Massas Gourmet', 5.5, 2, utc_timestamp, utc_timestamp, true);
+insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao, ativo) values ('Comida Mineira', 0, 1, utc_timestamp, utc_timestamp, true);
+insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao, ativo) values ('Java Steakhouse', 12, 3, utc_timestamp, utc_timestamp, true);
+insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao, ativo) values ('Lanchonete do Tio Sam', 11, 1, utc_timestamp, utc_timestamp, true);
+insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao, ativo) values ('Bar da Maria', 6, 1, utc_timestamp, utc_timestamp, true);
+insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao, ativo) values ('Chinese Express', 3, 3, utc_timestamp, utc_timestamp, true);
 
 
 insert into formas_pagamentos (descricao) values ('Cartão de Crédito');
