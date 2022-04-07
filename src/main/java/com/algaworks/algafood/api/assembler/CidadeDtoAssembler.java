@@ -2,8 +2,8 @@ package com.algaworks.algafood.api.assembler;
 
 import org.springframework.stereotype.Component;
 
-import com.algaworks.algafood.api.model.CidadeOutputDto;
-import com.algaworks.algafood.api.model.input.CidadeInputDto;
+import com.algaworks.algafood.api.dto.input.CidadeInputDto;
+import com.algaworks.algafood.api.dto.output.CidadeOutputDto;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Estado;
 

@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
-import com.algaworks.algafood.api.model.RestauranteOutputDto;
-import com.algaworks.algafood.api.model.input.RestauranteInputDto;
+import com.algaworks.algafood.api.dto.input.RestauranteInputDto;
+import com.algaworks.algafood.api.dto.output.RestauranteOutputDto;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;

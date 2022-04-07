@@ -2,8 +2,8 @@ package com.algaworks.algafood.api.assembler;
 
 import org.springframework.stereotype.Component;
 
-import com.algaworks.algafood.api.model.RestauranteOutputDto;
-import com.algaworks.algafood.api.model.input.RestauranteInputDto;
+import com.algaworks.algafood.api.dto.input.RestauranteInputDto;
+import com.algaworks.algafood.api.dto.output.RestauranteOutputDto;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;

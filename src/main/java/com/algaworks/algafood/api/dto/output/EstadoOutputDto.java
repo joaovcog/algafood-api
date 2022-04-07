@@ -1,14 +1,13 @@
-package com.algaworks.algafood.api.model;
+package com.algaworks.algafood.api.dto.output;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CidadeResumoOutputDto {
+public class EstadoOutputDto {
 	
 	private Long codigo;
 	private String nome;
-	private String estado;
 	
 }

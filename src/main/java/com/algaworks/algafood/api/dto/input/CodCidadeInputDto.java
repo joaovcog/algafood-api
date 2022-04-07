@@ -1,4 +1,4 @@
-package com.algaworks.algafood.api.model.input;
+package com.algaworks.algafood.api.dto.input;
 
 import javax.validation.constraints.NotNull;
 
@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CodCozinhaInputDto {
+public class CodCidadeInputDto {
 
 	@NotNull
 	private Long codigo;
