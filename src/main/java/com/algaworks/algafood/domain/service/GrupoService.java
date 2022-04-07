@@ -22,8 +22,8 @@ public class GrupoService {
 	private GrupoRepository grupoRepository;
 
 	@Transactional
-	public void salvar(Grupo grupo) {
-		grupoRepository.save(grupo);
+	public Grupo salvar(Grupo grupo) {
+		return grupoRepository.save(grupo);
 	}
 
 	public Grupo buscarOuFalhar(Long codGrupo) {
