@@ -40,23 +40,23 @@ public class CidadeController {
 	
 	@GetMapping
 	public List<CidadeOutputDto> listar() {
-		return cidadeDtoAssembler.toCollectionOutputDtoFromDomainEntity(cidadeRepository.findAll(), CidadeOutputDto.class);
+		return cidadeDtoAssembler.toCollectionOutputDtoFromDomainEntity(cidadeRepository.findAll());
 	}
 
 	@GetMapping("/{codigo}")
 	public CidadeOutputDto buscar(@PathVariable Long codigo) {
 		Cidade cidade = cidadeService.buscarOuFalhar(codigo);
 		
-		return cidadeDtoAssembler.toOutputDtoFromDomainEntity(cidade, CidadeOutputDto.class);
+		return cidadeDtoAssembler.toOutputDtoFromDomainEntity(cidade);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeOutputDto adicionar(@RequestBody @Valid CidadeInputDto cidadeInput) {
 		try {
-			Cidade cidade = cidadeDtoAssembler.toDomainObjectFromInputDto(cidadeInput, Cidade.class);
+			Cidade cidade = cidadeDtoAssembler.toDomainObjectFromInputDto(cidadeInput);
 			
-			return cidadeDtoAssembler.toOutputDtoFromDomainEntity(cidadeService.salvar(cidade), CidadeOutputDto.class);
+			return cidadeDtoAssembler.toOutputDtoFromDomainEntity(cidadeService.salvar(cidade));
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
@@ -69,7 +69,7 @@ public class CidadeController {
 		cidadeDtoAssembler.copyFromInputDtoToDomainObject(cidadeInput, cidadeAtual);
 
 		try {
-			return cidadeDtoAssembler.toOutputDtoFromDomainEntity(cidadeService.salvar(cidadeAtual), CidadeOutputDto.class);
+			return cidadeDtoAssembler.toOutputDtoFromDomainEntity(cidadeService.salvar(cidadeAtual));
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}

@@ -38,22 +38,22 @@ public class EstadoController {
 	
 	@GetMapping
 	public List<EstadoOutputDto> listar() {
-		return estadoDtoAssembler.toCollectionOutputDtoFromDomainEntity(estadoRepository.findAll(), EstadoOutputDto.class);
+		return estadoDtoAssembler.toCollectionOutputDtoFromDomainEntity(estadoRepository.findAll());
 	}
 
 	@GetMapping("/{codigo}")
 	public EstadoOutputDto buscar(@PathVariable Long codigo) {
 		Estado estado = estadoService.buscarOuFalhar(codigo);
 		
-		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estado, EstadoOutputDto.class);
+		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estado);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public EstadoOutputDto adicionar(@RequestBody @Valid EstadoInputDto estadoInput) {
-		Estado estado = estadoDtoAssembler.toDomainObjectFromInputDto(estadoInput, Estado.class);
+		Estado estado = estadoDtoAssembler.toDomainObjectFromInputDto(estadoInput);
 		
-		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estadoService.salvar(estado), EstadoOutputDto.class);
+		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estadoService.salvar(estado));
 	}
 
 	@PutMapping("/{codigo}")
@@ -62,7 +62,7 @@ public class EstadoController {
 		
 		estadoDtoAssembler.copyFromInputDtoToDomainObject(estadoInput, estadoAtual);
 
-		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estadoService.salvar(estadoAtual), EstadoOutputDto.class);
+		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estadoService.salvar(estadoAtual));
 	}
 
 	@DeleteMapping("/{codigo}")

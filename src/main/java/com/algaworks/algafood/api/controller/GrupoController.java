@@ -36,22 +36,22 @@ public class GrupoController {
 	public List<GrupoOutputDto> listar() {
 		List<Grupo> grupos = grupoService.listar();
 
-		return grupoDtoAssembler.toCollectionOutputDtoFromDomainEntity(grupos, GrupoOutputDto.class);
+		return grupoDtoAssembler.toCollectionOutputDtoFromDomainEntity(grupos);
 	}
 
 	@GetMapping("/{codigo}")
 	public GrupoOutputDto buscar(@PathVariable Long codigo) {
 		Grupo grupo = grupoService.buscarOuFalhar(codigo);
 
-		return grupoDtoAssembler.toOutputDtoFromDomainEntity(grupo, GrupoOutputDto.class);
+		return grupoDtoAssembler.toOutputDtoFromDomainEntity(grupo);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public GrupoOutputDto adicionar(@RequestBody GrupoInputDto grupoInput) {
-		Grupo grupo = grupoDtoAssembler.toDomainObjectFromInputDto(grupoInput, Grupo.class);
+		Grupo grupo = grupoDtoAssembler.toDomainObjectFromInputDto(grupoInput);
 
-		return grupoDtoAssembler.toOutputDtoFromDomainEntity(grupoService.salvar(grupo), GrupoOutputDto.class);
+		return grupoDtoAssembler.toOutputDtoFromDomainEntity(grupoService.salvar(grupo));
 	}
 
 	@PutMapping("/{codigo}")
@@ -60,7 +60,7 @@ public class GrupoController {
 
 		grupoDtoAssembler.copyFromInputDtoToDomainObject(grupoInput, grupoAtual);
 
-		return grupoDtoAssembler.toOutputDtoFromDomainEntity(grupoService.salvar(grupoAtual), GrupoOutputDto.class);
+		return grupoDtoAssembler.toOutputDtoFromDomainEntity(grupoService.salvar(grupoAtual));
 	}
 
 	@DeleteMapping("/{codigo}")

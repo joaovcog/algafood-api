@@ -37,22 +37,22 @@ public class UsuarioController {
 	public List<UsuarioOutputDto> listar() {
 		List<Usuario> usuarios = usuarioService.listar();
 		
-		return usuarioDtoAssembler.toCollectionOutputDtoFromDomainEntity(usuarios, UsuarioOutputDto.class);
+		return usuarioDtoAssembler.toCollectionOutputDtoFromDomainEntity(usuarios);
 	}
 	
 	@GetMapping("/{codigo}")
 	public UsuarioOutputDto buscar(@PathVariable Long codigo) {
 		Usuario usuario = usuarioService.buscarOuFalhar(codigo);
 		
-		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuario, UsuarioOutputDto.class);
+		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuario);
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public UsuarioOutputDto adicionar(@RequestBody @Valid UsuarioCadastroInputDto usuarioInput) {
-		Usuario usuario = usuarioDtoAssembler.toDomainObjectFromInputDto(usuarioInput, Usuario.class);
+		Usuario usuario = usuarioDtoAssembler.toDomainObjectFromInputDto(usuarioInput);
 		
-		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuarioService.salvar(usuario), UsuarioOutputDto.class);
+		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuarioService.salvar(usuario));
 	}
 	
 	@PutMapping("/{codigo}")
@@ -61,7 +61,7 @@ public class UsuarioController {
 		
 		usuarioDtoAssembler.copyFromInputDtoToDomainObject(usuarioInput, usuarioAtual);
 		
-		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuarioService.salvar(usuarioAtual), UsuarioOutputDto.class);
+		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuarioService.salvar(usuarioAtual));
 	}
 	
 	@PutMapping("/{codigo}/senha")

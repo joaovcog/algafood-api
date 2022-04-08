@@ -41,23 +41,23 @@ public class RestauranteController {
 	
 	@GetMapping
 	public List<RestauranteOutputDto> listar() {
-		return restauranteDtoAssembler.toCollectionOutputDtoFromDomainEntity(restauranteRepository.findAll(), RestauranteOutputDto.class);
+		return restauranteDtoAssembler.toCollectionOutputDtoFromDomainEntity(restauranteRepository.findAll());
 	}
 
 	@GetMapping("/{codigo}")
 	public RestauranteOutputDto buscar(@PathVariable Long codigo) {
 		Restaurante restaurante = restauranteService.buscarOuFalhar(codigo);
 		
-		return restauranteDtoAssembler.toOutputDtoFromDomainEntity(restaurante, RestauranteOutputDto.class);
+		return restauranteDtoAssembler.toOutputDtoFromDomainEntity(restaurante);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public RestauranteOutputDto adicionar(@RequestBody @Valid RestauranteInputDto restauranteInput) {
 		try {
-			Restaurante restaurante = restauranteDtoAssembler.toDomainObjectFromInputDto(restauranteInput, Restaurante.class);
+			Restaurante restaurante = restauranteDtoAssembler.toDomainObjectFromInputDto(restauranteInput);
 			
-			return restauranteDtoAssembler.toOutputDtoFromDomainEntity(restauranteService.salvar(restaurante), RestauranteOutputDto.class);
+			return restauranteDtoAssembler.toOutputDtoFromDomainEntity(restauranteService.salvar(restaurante));
 		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
@@ -73,7 +73,7 @@ public class RestauranteController {
 		//BeanUtils.copyProperties(restaurante, restauranteAtual, "codigo", "formasPagamentos", "endereco", "dataCadastro", "produtos");
 		
 		try {
-			return restauranteDtoAssembler.toOutputDtoFromDomainEntity(restauranteService.salvar(restauranteAtual), RestauranteOutputDto.class);
+			return restauranteDtoAssembler.toOutputDtoFromDomainEntity(restauranteService.salvar(restauranteAtual));
 		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}

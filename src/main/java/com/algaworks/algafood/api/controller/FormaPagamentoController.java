@@ -35,22 +35,22 @@ public class FormaPagamentoController {
 	@GetMapping
 	public List<FormaPagamentoOutputDto> listar() {
 		//TODO refatorar controllers para atribuir a lista antes de passar para o assembler
-		return formaPagamentoDtoAssembler.toCollectionOutputDtoFromDomainEntity(formaPagamentoService.listar(), FormaPagamentoOutputDto.class);
+		return formaPagamentoDtoAssembler.toCollectionOutputDtoFromDomainEntity(formaPagamentoService.listar());
 	}
 	
 	@GetMapping("/{codigo}")
 	public FormaPagamentoOutputDto buscar(@PathVariable Long codigo) {
 		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(codigo);
 		
-		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamento, FormaPagamentoOutputDto.class);
+		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamento);
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public FormaPagamentoOutputDto adicionar(@RequestBody @Valid FormaPagamentoInputDto formaPagamentoInput) {
-		FormaPagamento formaPagamento = formaPagamentoDtoAssembler.toDomainObjectFromInputDto(formaPagamentoInput, FormaPagamento.class);
+		FormaPagamento formaPagamento = formaPagamentoDtoAssembler.toDomainObjectFromInputDto(formaPagamentoInput);
 		//TODO refatorar controllers para atribuir o retorno do salvar a uma variavel antes de passar para o assembler
-		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamentoService.salvar(formaPagamento), FormaPagamentoOutputDto.class);
+		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamentoService.salvar(formaPagamento));
 	}
 	
 	@PutMapping("/{codigo}")
@@ -59,7 +59,7 @@ public class FormaPagamentoController {
 		
 		formaPagamentoDtoAssembler.copyFromInputDtoToDomainObject(formaPagamentoInput, formaPagamentoAtual);
 		//TODO refatorar controllers para atribuir o retorno do salvar a uma variavel antes de passar para o assembler
-		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamentoService.salvar(formaPagamentoAtual), FormaPagamentoOutputDto.class);
+		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamentoService.salvar(formaPagamentoAtual));
 	}
 	
 	@DeleteMapping("/{codigo}")
