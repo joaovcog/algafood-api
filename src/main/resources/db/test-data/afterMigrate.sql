@@ -77,3 +77,11 @@ insert into permissoes (nome, descricao) values ('EDITAR_COZINHAS', 'Permite edi
 
 
 insert into restaurantes_formas_pagamentos (cod_restaurante, cod_forma_pagamento) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
+
+
+insert into grupos (nome) values ('Administrador');
+insert into grupos (nome) values ('Vendedor');
+
+
+insert into usuarios (nome, email, senha, data_cadastro) values ('João Victor', 'joaov', '123', utc_timestamp);
+insert into usuarios (nome, email, senha, data_cadastro) values ('Maria', 'maria', '123', utc_timestamp);
