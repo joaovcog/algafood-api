@@ -3,12 +3,10 @@ package com.algaworks.algafood.domain.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
+import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.UsuarioNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.UsuarioRepository;
@@ -16,14 +14,23 @@ import com.algaworks.algafood.domain.repository.UsuarioRepository;
 @Service
 public class UsuarioService {
 
-	private static final String MSG_USUARIO_EM_USO = "Usuário de código %d não pode ser removido, pois está em uso.";
-
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
 	@Transactional
 	public Usuario salvar(Usuario usuario) {
 		return usuarioRepository.save(usuario);
+	}
+	
+	@Transactional
+	public void atualizarSenha(Long codUsuario, String senhaAtual, String novaSenha) {
+		Usuario usuario = buscarOuFalhar(codUsuario);
+		
+		if (isSenhaAtualInformadaIncorreta(usuario.getSenha(), senhaAtual)) {
+			throw new NegocioException("Senha atual informada não coincide com a senha do usuário.");
+		}
+		
+		usuario.setSenha(novaSenha);
 	}
 
 	public Usuario buscarOuFalhar(Long codUsuario) {
@@ -34,17 +41,9 @@ public class UsuarioService {
 	public List<Usuario> listar() {
 		return usuarioRepository.findAll();
 	}
-
-	@Transactional
-	public void excluir(Long codUsuario) {
-		try {
-			usuarioRepository.deleteById(codUsuario);
-			usuarioRepository.flush();
-		} catch (EmptyResultDataAccessException e) {
-			throw new UsuarioNaoEncontradoException(codUsuario);
-		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(String.format(MSG_USUARIO_EM_USO, codUsuario));
-		}
+	
+	private boolean isSenhaAtualInformadaIncorreta(String senhaAtual, String senhaAtualInformada) {
+		return !senhaAtual.equals(senhaAtualInformada);
 	}
 
 }
