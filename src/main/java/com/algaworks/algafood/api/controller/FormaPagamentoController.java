@@ -34,8 +34,9 @@ public class FormaPagamentoController {
 	
 	@GetMapping
 	public List<FormaPagamentoOutputDto> listar() {
-		//TODO refatorar controllers para atribuir a lista antes de passar para o assembler
-		return formaPagamentoDtoAssembler.toCollectionOutputDtoFromDomainEntity(formaPagamentoService.listar());
+		List<FormaPagamento> formasPagamentos = formaPagamentoService.listar();
+		
+		return formaPagamentoDtoAssembler.toCollectionOutputDtoFromDomainEntity(formasPagamentos);
 	}
 	
 	@GetMapping("/{codigo}")
@@ -49,8 +50,9 @@ public class FormaPagamentoController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public FormaPagamentoOutputDto adicionar(@RequestBody @Valid FormaPagamentoInputDto formaPagamentoInput) {
 		FormaPagamento formaPagamento = formaPagamentoDtoAssembler.toDomainObjectFromInputDto(formaPagamentoInput);
-		//TODO refatorar controllers para atribuir o retorno do salvar a uma variavel antes de passar para o assembler
-		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamentoService.salvar(formaPagamento));
+		formaPagamento = formaPagamentoService.salvar(formaPagamento);
+		
+		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamento);
 	}
 	
 	@PutMapping("/{codigo}")
@@ -58,8 +60,10 @@ public class FormaPagamentoController {
 		FormaPagamento formaPagamentoAtual = formaPagamentoService.buscarOuFalhar(codigo);
 		
 		formaPagamentoDtoAssembler.copyFromInputDtoToDomainObject(formaPagamentoInput, formaPagamentoAtual);
-		//TODO refatorar controllers para atribuir o retorno do salvar a uma variavel antes de passar para o assembler
-		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamentoService.salvar(formaPagamentoAtual));
+		
+		formaPagamentoAtual = formaPagamentoService.salvar(formaPagamentoAtual);
+		
+		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamentoAtual);
 	}
 	
 	@DeleteMapping("/{codigo}")

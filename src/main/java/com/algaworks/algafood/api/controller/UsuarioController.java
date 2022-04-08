@@ -51,8 +51,9 @@ public class UsuarioController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public UsuarioOutputDto adicionar(@RequestBody @Valid UsuarioCadastroInputDto usuarioInput) {
 		Usuario usuario = usuarioDtoAssembler.toDomainObjectFromInputDto(usuarioInput);
+		usuario = usuarioService.salvar(usuario);
 		
-		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuarioService.salvar(usuario));
+		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuario);
 	}
 	
 	@PutMapping("/{codigo}")
@@ -61,7 +62,9 @@ public class UsuarioController {
 		
 		usuarioDtoAssembler.copyFromInputDtoToDomainObject(usuarioInput, usuarioAtual);
 		
-		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuarioService.salvar(usuarioAtual));
+		usuarioAtual = usuarioService.salvar(usuarioAtual);
+		
+		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuarioAtual);
 	}
 	
 	@PutMapping("/{codigo}/senha")

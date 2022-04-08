@@ -63,10 +63,10 @@ public class RestauranteController {
 		}
 	}
 
-	@PutMapping("/{codigo}")
-	public RestauranteOutputDto atualizar(@PathVariable Long codigo, @RequestBody @Valid RestauranteInputDto restauranteInput) {
+	@PutMapping("/{codRestaurante}")
+	public RestauranteOutputDto atualizar(@PathVariable Long codRestaurante, @RequestBody @Valid RestauranteInputDto restauranteInput) {
 		//Restaurante restaurante = restauranteDtoAssembler.toDomainObjectFromInputDto(restauranteInput, Restaurante.class);
-		Restaurante restauranteAtual = restauranteService.buscarOuFalhar(codigo);
+		Restaurante restauranteAtual = restauranteService.buscarOuFalhar(codRestaurante);
 
 		restauranteDtoAssembler.copyFromInputDtoToDomainObject(restauranteInput, restauranteAtual);
 		
@@ -84,7 +84,7 @@ public class RestauranteController {
 	public void ativar(@PathVariable Long codRestaurante) {
 		restauranteService.ativar(codRestaurante);
 	}
-	
+	//TODO padronizar variaveis de codigo
 	@DeleteMapping("/{codRestaurante}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativar(@PathVariable Long codRestaurante) {

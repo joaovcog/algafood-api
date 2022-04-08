@@ -3,7 +3,9 @@ package com.algaworks.algafood.domain.model;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -63,7 +65,7 @@ public class Restaurante {
 	@JoinTable(name = "restaurantes_formas_pagamentos", 
 		joinColumns = @JoinColumn(name = "cod_restaurante"), 
 		inverseJoinColumns = @JoinColumn(name = "cod_forma_pagamento"))
-	private List<FormaPagamento> formasPagamentos = new ArrayList<>();
+	private Set<FormaPagamento> formasPagamento = new HashSet<>();
 	
 	@OneToMany(mappedBy = "restaurante")
 	private List<Produto> produtos = new ArrayList<>();
@@ -76,5 +78,21 @@ public class Restaurante {
 	
 	public void inativar() {
 		setAtivo(false);
+	}
+	
+	public boolean vincularFormaPagamento(FormaPagamento formaPagamento) {
+		return getFormasPagamento().add(formaPagamento);
+	}
+	
+	public boolean desvincularFormaPagamento(FormaPagamento formaPagamento) {
+		return getFormasPagamento().remove(formaPagamento);
+	}
+	
+	public boolean temFormaPagamento(Long codFormaPagamento) {
+		return formasPagamento.stream().anyMatch(fp -> fp.getCodigo().equals(codFormaPagamento));
+	}
+	
+	public boolean naoTemFormaPagamento(Long codFormaPagamento) {
+		return !temFormaPagamento(codFormaPagamento);
 	}
 }
