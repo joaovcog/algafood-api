@@ -53,10 +53,11 @@ insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atu
 insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao, ativo, aberto) values ('Bar da Maria', 6, 1, utc_timestamp, utc_timestamp, true, true);
 insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao, ativo, aberto) values ('Chinese Express', 3, 3, utc_timestamp, utc_timestamp, true, true);
 
-
 insert into formas_pagamentos (descricao) values ('Cartão de Crédito');
 insert into formas_pagamentos (descricao) values ('Dinheiro');
 insert into formas_pagamentos (descricao) values ('Pix');
+
+insert into restaurantes_formas_pagamentos (cod_restaurante, cod_forma_pagamento) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
 
 
 insert into produtos (nome, descricao, preco, ativo, cod_restaurante) values ('Panelinha de Galinhada', 'Arroz com frango, pequi, tomate, calabresa, bacon, palmito e muçarela', 50.00, true, 1);
@@ -70,7 +71,8 @@ insert into produtos (nome, descricao, preco, ativo, cod_restaurante) values ('T
 insert into produtos (nome, descricao, preco, ativo, cod_restaurante) values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e tomate', 8, 1, 5);
 
 
-
+insert into usuarios (nome, email, senha, data_cadastro) values ('João Victor', 'joaov', '123', utc_timestamp);
+insert into usuarios (nome, email, senha, data_cadastro) values ('Maria', 'maria', '123', utc_timestamp);
 
 insert into permissoes (nome, descricao) values ('CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
 insert into permissoes (nome, descricao) values ('EDITAR_COZINHAS', 'Permite editar cozinhas');
@@ -86,11 +88,4 @@ insert into grupos (nome) values ('Cliente');
 
 insert into grupos_permissoes (cod_grupo, cod_permissao) values (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (2, 3), (2, 4), (2, 6), (3, 3), (3, 5), (3, 6);
 
-
-
-
-insert into restaurantes_formas_pagamentos (cod_restaurante, cod_forma_pagamento) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
-
-
-insert into usuarios (nome, email, senha, data_cadastro) values ('João Victor', 'joaov', '123', utc_timestamp);
-insert into usuarios (nome, email, senha, data_cadastro) values ('Maria', 'maria', '123', utc_timestamp);
+insert into usuarios_grupos (cod_usuario, cod_grupo) values (1, 1), (1, 2), (2, 3);
