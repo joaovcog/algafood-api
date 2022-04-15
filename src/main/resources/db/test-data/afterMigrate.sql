@@ -74,13 +74,22 @@ insert into produtos (nome, descricao, preco, ativo, cod_restaurante) values ('E
 
 insert into permissoes (nome, descricao) values ('CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
 insert into permissoes (nome, descricao) values ('EDITAR_COZINHAS', 'Permite editar cozinhas');
+insert into permissoes (nome, descricao) values ('CONSULTAR_RESTAURANTES', 'Permite consultar restaurantes');
+insert into permissoes (nome, descricao) values ('EDITAR_RESTAURANTES', 'Permite editar restaurantes');
+insert into permissoes (nome, descricao) values ('CRIAR_PEDIDOS', 'Permite criar pedidos');
+insert into permissoes (nome, descricao) values ('CONSULTAR_PEDIDOS', 'Permite consultar pedidos');
+insert into permissoes (nome, descricao) values ('VISUALIZAR_RELATORIOS_PEDIDOS', 'Permite visualizar relatórios de pedidos');
+
+insert into grupos (nome) values ('Administrador');
+insert into grupos (nome) values ('Funcionário');
+insert into grupos (nome) values ('Cliente');
+
+insert into grupos_permissoes (cod_grupo, cod_permissao) values (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (2, 3), (2, 4), (2, 6), (3, 3), (3, 5), (3, 6);
+
+
 
 
 insert into restaurantes_formas_pagamentos (cod_restaurante, cod_forma_pagamento) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
-
-
-insert into grupos (nome) values ('Administrador');
-insert into grupos (nome) values ('Vendedor');
 
 
 insert into usuarios (nome, email, senha, data_cadastro) values ('João Victor', 'joaov', '123', utc_timestamp);

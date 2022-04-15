@@ -1,7 +1,7 @@
 package com.algaworks.algafood.domain.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,6 +34,22 @@ public class Grupo {
 	@JoinTable(name = "grupos_permissoes", 
 		joinColumns = @JoinColumn(name = "cod_grupo"), 
 		inverseJoinColumns = @JoinColumn(name = "cod_permissao"))
-	private List<Permissao> permissoes = new ArrayList<>();
+	private Set<Permissao> permissoes = new HashSet<>();
+	
+	public boolean vincularPermissao(Permissao permissao) {
+		return getPermissoes().add(permissao);
+	}
+	
+	public boolean desvincularPermissao(Permissao permissao) {
+		return getPermissoes().remove(permissao);
+	}
+	
+	public boolean temPermissao(Long codPermissao) {
+		return getPermissoes().stream().anyMatch(p -> p.getCodigo().equals(codPermissao));
+	}
+	
+	public boolean naoTemPermissao(Long codPermissao) {
+		return !temPermissao(codPermissao);
+	}
 	
 }
