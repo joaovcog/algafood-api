@@ -26,6 +26,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.exception.UsuarioNaoVinculadoRestauranteException;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
@@ -128,6 +129,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		ApiError error = createApiErrorBuilder(status, errorType, detail).userMessage(detail).build();
 
 		return handleExceptionInternal(ex, error, headers, status, request);
+	}
+	
+	@ExceptionHandler(UsuarioNaoVinculadoRestauranteException.class)
+	public ResponseEntity<?> handleUsuarioNaoVinculadoRestaurante(UsuarioNaoVinculadoRestauranteException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		ApiErrorType errorType = ApiErrorType.RECURSO_NAO_VINCULADO;
+		String detail = ex.getMessage();
+
+		ApiError error = createApiErrorBuilder(status, errorType, detail).userMessage(detail).build();
+
+		return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
 	}
 
 	@ExceptionHandler(EntidadeNaoEncontradaException.class)

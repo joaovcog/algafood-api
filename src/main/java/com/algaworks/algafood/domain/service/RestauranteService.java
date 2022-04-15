@@ -5,10 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
+import com.algaworks.algafood.domain.exception.UsuarioNaoVinculadoRestauranteException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 
 @Service
@@ -22,6 +24,9 @@ public class RestauranteService {
 
 	@Autowired
 	private FormaPagamentoService formaPagamentoService;
+	
+	@Autowired
+	private UsuarioService usuarioService;
 
 	@Autowired
 	private CidadeService cidadeService;
@@ -85,6 +90,30 @@ public class RestauranteService {
 		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(codFormaPagamento);
 
 		restaurante.desvincularFormaPagamento(formaPagamento);
+	}
+	
+	@Transactional
+	public void vincularUsuarioResponsavel(Long codRestaurante, Long codUsuario) {
+		Restaurante restaurante = buscarOuFalhar(codRestaurante);
+		
+		if (restaurante.naoTemUsuarioResponsavel(codUsuario)) {
+			Usuario usuario = usuarioService.buscarOuFalhar(codUsuario);
+			
+			restaurante.vincularUsuarioResponsavel(usuario);
+		}
+	}
+	
+	@Transactional
+	public void desvincularUsuarioResponsavel(Long codRestaurante, Long codUsuario) {
+		Restaurante restaurante = buscarOuFalhar(codRestaurante);
+		
+		if (restaurante.naoTemUsuarioResponsavel(codUsuario)) {
+			throw new UsuarioNaoVinculadoRestauranteException(codRestaurante, codUsuario);
+		}
+		
+		Usuario usuario = usuarioService.buscarOuFalhar(codUsuario);
+		
+		restaurante.desvincularUsuarioResponsavel(usuario);
 	}
 
 	public Restaurante buscarOuFalhar(Long codRestaurante) {

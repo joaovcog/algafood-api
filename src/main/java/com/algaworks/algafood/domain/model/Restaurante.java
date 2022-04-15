@@ -45,64 +45,86 @@ public class Restaurante {
 
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "cod_cozinha", nullable = false)
 	private Cozinha cozinha;
 
 	@Embedded
 	private Endereco endereco;
-	
+
 	@CreationTimestamp
 	@Column(nullable = false, columnDefinition = "datetime")
 	private OffsetDateTime dataCadastro;
-	
+
 	@UpdateTimestamp
 	@Column(nullable = false, columnDefinition = "datetime")
 	private OffsetDateTime dataAtualizacao;
-	
+
 	@ManyToMany
 	@JoinTable(name = "restaurantes_formas_pagamentos", 
 		joinColumns = @JoinColumn(name = "cod_restaurante"), 
 		inverseJoinColumns = @JoinColumn(name = "cod_forma_pagamento"))
 	private Set<FormaPagamento> formasPagamento = new HashSet<>();
-	
+
+	@ManyToMany
+	@JoinTable(name = "restaurantes_usuarios_responsaveis", 
+		joinColumns = @JoinColumn(name = "cod_restaurante"), 
+		inverseJoinColumns = @JoinColumn(name = "cod_usuario"))
+	private Set<Usuario> usuariosResponsaveis = new HashSet<>();
+
 	@OneToMany(mappedBy = "restaurante")
 	private List<Produto> produtos = new ArrayList<>();
-	
+
 	private Boolean ativo = Boolean.TRUE;
-	
+
 	private Boolean aberto = Boolean.FALSE;
-	
+
 	public void ativar() {
 		setAtivo(true);
 	}
-	
+
 	public void inativar() {
 		setAtivo(false);
 	}
-	
+
 	public void abrir() {
 		setAberto(true);
 	}
-	
+
 	public void fechar() {
 		setAberto(false);
 	}
-	
+
 	public boolean vincularFormaPagamento(FormaPagamento formaPagamento) {
 		return getFormasPagamento().add(formaPagamento);
 	}
-	
+
 	public boolean desvincularFormaPagamento(FormaPagamento formaPagamento) {
 		return getFormasPagamento().remove(formaPagamento);
 	}
-	
+
 	public boolean temFormaPagamento(Long codFormaPagamento) {
-		return formasPagamento.stream().anyMatch(fp -> fp.getCodigo().equals(codFormaPagamento));
+		return getFormasPagamento().stream().anyMatch(fp -> fp.getCodigo().equals(codFormaPagamento));
 	}
-	
+
 	public boolean naoTemFormaPagamento(Long codFormaPagamento) {
 		return !temFormaPagamento(codFormaPagamento);
+	}
+
+	public boolean vincularUsuarioResponsavel(Usuario usuario) {
+		return getUsuariosResponsaveis().add(usuario);
+	}
+
+	public boolean desvincularUsuarioResponsavel(Usuario usuario) {
+		return getUsuariosResponsaveis().remove(usuario);
+	}
+
+	public boolean temUsuarioResponsavel(Long codUsuario) {
+		return getUsuariosResponsaveis().stream().anyMatch(u -> u.getCodigo().equals(codUsuario));
+	}
+
+	public boolean naoTemUsuarioResponsavel(Long codUsuario) {
+		return !temUsuarioResponsavel(codUsuario);
 	}
 }

@@ -10,6 +10,7 @@ delete from permissoes;
 delete from produtos;
 delete from restaurantes;
 delete from restaurantes_formas_pagamentos;
+delete from restaurantes_usuarios_responsaveis;
 delete from usuarios;
 delete from usuarios_grupos;
 
@@ -71,8 +72,9 @@ insert into produtos (nome, descricao, preco, ativo, cod_restaurante) values ('T
 insert into produtos (nome, descricao, preco, ativo, cod_restaurante) values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e tomate', 8, 1, 5);
 
 
-insert into usuarios (nome, email, senha, data_cadastro) values ('João Victor', 'joaov', '123', utc_timestamp);
-insert into usuarios (nome, email, senha, data_cadastro) values ('Maria', 'maria', '123', utc_timestamp);
+insert into usuarios (nome, email, senha, data_cadastro) values ('João Victor', 'joaov@email.com', '123', utc_timestamp);
+insert into usuarios (nome, email, senha, data_cadastro) values ('Maria', 'maria@email.com', '123', utc_timestamp);
+insert into usuarios (nome, email, senha, data_cadastro) values ('José', 'jose@email.com', '123', utc_timestamp);
 
 insert into permissoes (nome, descricao) values ('CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
 insert into permissoes (nome, descricao) values ('EDITAR_COZINHAS', 'Permite editar cozinhas');
@@ -89,3 +91,5 @@ insert into grupos (nome) values ('Cliente');
 insert into grupos_permissoes (cod_grupo, cod_permissao) values (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (2, 3), (2, 4), (2, 6), (3, 3), (3, 5), (3, 6);
 
 insert into usuarios_grupos (cod_usuario, cod_grupo) values (1, 1), (1, 2), (2, 3);
+
+insert into restaurantes_usuarios_responsaveis (cod_restaurante, cod_usuario) values (1, 1), (2, 1), (3, 2), (4, 3);
