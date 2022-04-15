@@ -44,9 +44,9 @@ public class RestauranteController {
 		return restauranteDtoAssembler.toCollectionOutputDtoFromDomainEntity(restauranteRepository.findAll());
 	}
 
-	@GetMapping("/{codigo}")
-	public RestauranteOutputDto buscar(@PathVariable Long codigo) {
-		Restaurante restaurante = restauranteService.buscarOuFalhar(codigo);
+	@GetMapping("/{codRestaurante}")
+	public RestauranteOutputDto buscar(@PathVariable Long codRestaurante) {
+		Restaurante restaurante = restauranteService.buscarOuFalhar(codRestaurante);
 		
 		return restauranteDtoAssembler.toOutputDtoFromDomainEntity(restaurante);
 	}
@@ -84,11 +84,23 @@ public class RestauranteController {
 	public void ativar(@PathVariable Long codRestaurante) {
 		restauranteService.ativar(codRestaurante);
 	}
-	//TODO padronizar variaveis de codigo
+	
 	@DeleteMapping("/{codRestaurante}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativar(@PathVariable Long codRestaurante) {
 		restauranteService.inativar(codRestaurante);
+	}
+	
+	@PutMapping("/{codRestaurante}/abertura")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void abrir(@PathVariable Long codRestaurante) {
+		restauranteService.abrir(codRestaurante);
+	}
+	
+	@PutMapping("/{codRestaurante}/fechamento")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void fechar(@PathVariable Long codRestaurante) {
+		restauranteService.fechar(codRestaurante);
 	}
 
 	/*

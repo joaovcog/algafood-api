@@ -41,9 +41,9 @@ public class EstadoController {
 		return estadoDtoAssembler.toCollectionOutputDtoFromDomainEntity(estadoRepository.findAll());
 	}
 
-	@GetMapping("/{codigo}")
-	public EstadoOutputDto buscar(@PathVariable Long codigo) {
-		Estado estado = estadoService.buscarOuFalhar(codigo);
+	@GetMapping("/{codEstado}")
+	public EstadoOutputDto buscar(@PathVariable Long codEstado) {
+		Estado estado = estadoService.buscarOuFalhar(codEstado);
 		
 		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estado);
 	}
@@ -56,18 +56,18 @@ public class EstadoController {
 		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estadoService.salvar(estado));
 	}
 
-	@PutMapping("/{codigo}")
-	public EstadoOutputDto atualizar(@PathVariable Long codigo, @RequestBody @Valid EstadoInputDto estadoInput) {
-		Estado estadoAtual = estadoService.buscarOuFalhar(codigo);
+	@PutMapping("/{codEstado}")
+	public EstadoOutputDto atualizar(@PathVariable Long codEstado, @RequestBody @Valid EstadoInputDto estadoInput) {
+		Estado estadoAtual = estadoService.buscarOuFalhar(codEstado);
 		
 		estadoDtoAssembler.copyFromInputDtoToDomainObject(estadoInput, estadoAtual);
 
 		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estadoService.salvar(estadoAtual));
 	}
 
-	@DeleteMapping("/{codigo}")
+	@DeleteMapping("/{codEstado}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long codigo) {
-		estadoService.excluir(codigo);
+	public void remover(@PathVariable Long codEstado) {
+		estadoService.excluir(codEstado);
 	}
 }

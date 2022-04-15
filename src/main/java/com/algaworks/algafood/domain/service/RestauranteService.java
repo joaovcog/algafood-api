@@ -53,6 +53,20 @@ public class RestauranteService {
 
 		restauranteAtual.inativar();
 	}
+	
+	@Transactional
+	public void abrir(Long codRestaurante) {
+		Restaurante restauranteAtual = buscarOuFalhar(codRestaurante);
+
+		restauranteAtual.abrir();
+	}
+	
+	@Transactional
+	public void fechar(Long codRestaurante) {
+		Restaurante restauranteAtual = buscarOuFalhar(codRestaurante);
+
+		restauranteAtual.fechar();
+	}
 
 	@Transactional
 	public void vincularFormaPagamento(Long codRestaurante, Long codFormaPagamento) {

@@ -39,9 +39,9 @@ public class GrupoController {
 		return grupoDtoAssembler.toCollectionOutputDtoFromDomainEntity(grupos);
 	}
 
-	@GetMapping("/{codigo}")
-	public GrupoOutputDto buscar(@PathVariable Long codigo) {
-		Grupo grupo = grupoService.buscarOuFalhar(codigo);
+	@GetMapping("/{codGrupo}")
+	public GrupoOutputDto buscar(@PathVariable Long codGrupo) {
+		Grupo grupo = grupoService.buscarOuFalhar(codGrupo);
 
 		return grupoDtoAssembler.toOutputDtoFromDomainEntity(grupo);
 	}
@@ -54,19 +54,19 @@ public class GrupoController {
 		return grupoDtoAssembler.toOutputDtoFromDomainEntity(grupoService.salvar(grupo));
 	}
 
-	@PutMapping("/{codigo}")
-	public GrupoOutputDto atualizar(@PathVariable Long codigo, @RequestBody @Valid GrupoInputDto grupoInput) {
-		Grupo grupoAtual = grupoService.buscarOuFalhar(codigo);
+	@PutMapping("/{codGrupo}")
+	public GrupoOutputDto atualizar(@PathVariable Long codGrupo, @RequestBody @Valid GrupoInputDto grupoInput) {
+		Grupo grupoAtual = grupoService.buscarOuFalhar(codGrupo);
 
 		grupoDtoAssembler.copyFromInputDtoToDomainObject(grupoInput, grupoAtual);
 
 		return grupoDtoAssembler.toOutputDtoFromDomainEntity(grupoService.salvar(grupoAtual));
 	}
 
-	@DeleteMapping("/{codigo}")
+	@DeleteMapping("/{codGrupo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void excluir(@PathVariable Long codigo) {
-		grupoService.excluir(codigo);
+	public void excluir(@PathVariable Long codGrupo) {
+		grupoService.excluir(codGrupo);
 	}
 
 }

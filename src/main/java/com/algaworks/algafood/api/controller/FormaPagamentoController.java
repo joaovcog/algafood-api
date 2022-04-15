@@ -39,9 +39,9 @@ public class FormaPagamentoController {
 		return formaPagamentoDtoAssembler.toCollectionOutputDtoFromDomainEntity(formasPagamentos);
 	}
 	
-	@GetMapping("/{codigo}")
-	public FormaPagamentoOutputDto buscar(@PathVariable Long codigo) {
-		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(codigo);
+	@GetMapping("/{codFormaPagamento}")
+	public FormaPagamentoOutputDto buscar(@PathVariable Long codFormaPagamento) {
+		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(codFormaPagamento);
 		
 		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamento);
 	}
@@ -55,9 +55,9 @@ public class FormaPagamentoController {
 		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamento);
 	}
 	
-	@PutMapping("/{codigo}")
-	public FormaPagamentoOutputDto atualizar(@PathVariable Long codigo, @RequestBody @Valid FormaPagamentoInputDto formaPagamentoInput) {
-		FormaPagamento formaPagamentoAtual = formaPagamentoService.buscarOuFalhar(codigo);
+	@PutMapping("/{codFormaPagamento}")
+	public FormaPagamentoOutputDto atualizar(@PathVariable Long codFormaPagamento, @RequestBody @Valid FormaPagamentoInputDto formaPagamentoInput) {
+		FormaPagamento formaPagamentoAtual = formaPagamentoService.buscarOuFalhar(codFormaPagamento);
 		
 		formaPagamentoDtoAssembler.copyFromInputDtoToDomainObject(formaPagamentoInput, formaPagamentoAtual);
 		
@@ -66,9 +66,9 @@ public class FormaPagamentoController {
 		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamentoAtual);
 	}
 	
-	@DeleteMapping("/{codigo}")
+	@DeleteMapping("/{codFormaPagamento}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long codigo) {
-		formaPagamentoService.excluir(codigo);
+	public void remover(@PathVariable Long codFormaPagamento) {
+		formaPagamentoService.excluir(codFormaPagamento);
 	}
 }

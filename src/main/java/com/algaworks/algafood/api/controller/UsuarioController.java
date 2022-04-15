@@ -40,9 +40,9 @@ public class UsuarioController {
 		return usuarioDtoAssembler.toCollectionOutputDtoFromDomainEntity(usuarios);
 	}
 	
-	@GetMapping("/{codigo}")
-	public UsuarioOutputDto buscar(@PathVariable Long codigo) {
-		Usuario usuario = usuarioService.buscarOuFalhar(codigo);
+	@GetMapping("/{codUsuario}")
+	public UsuarioOutputDto buscar(@PathVariable Long codUsuario) {
+		Usuario usuario = usuarioService.buscarOuFalhar(codUsuario);
 		
 		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuario);
 	}
@@ -56,9 +56,9 @@ public class UsuarioController {
 		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuario);
 	}
 	
-	@PutMapping("/{codigo}")
-	public UsuarioOutputDto atualizar(@PathVariable Long codigo, @RequestBody @Valid UsuarioAtualizacaoInputDto usuarioInput) {
-		Usuario usuarioAtual = usuarioService.buscarOuFalhar(codigo);
+	@PutMapping("/{codUsuario}")
+	public UsuarioOutputDto atualizar(@PathVariable Long codUsuario, @RequestBody @Valid UsuarioAtualizacaoInputDto usuarioInput) {
+		Usuario usuarioAtual = usuarioService.buscarOuFalhar(codUsuario);
 		
 		usuarioDtoAssembler.copyFromInputDtoToDomainObject(usuarioInput, usuarioAtual);
 		
@@ -67,10 +67,10 @@ public class UsuarioController {
 		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuarioAtual);
 	}
 	
-	@PutMapping("/{codigo}/senha")
+	@PutMapping("/{codUsuario}/senha")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void atualizarSenha(@PathVariable Long codigo, @RequestBody @Valid UsuarioAtualizacaoSenhaInputDto usuarioInput) {
-		usuarioService.atualizarSenha(codigo, usuarioInput.getSenhaAtual(), usuarioInput.getNovaSenha());
+	public void atualizarSenha(@PathVariable Long codUsuario, @RequestBody @Valid UsuarioAtualizacaoSenhaInputDto usuarioInput) {
+		usuarioService.atualizarSenha(codUsuario, usuarioInput.getSenhaAtual(), usuarioInput.getNovaSenha());
 	}
 	
 }

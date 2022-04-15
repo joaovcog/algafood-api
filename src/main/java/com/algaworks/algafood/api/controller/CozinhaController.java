@@ -41,9 +41,9 @@ public class CozinhaController {
 		return cozinhaDtoAssembler.toCollectionOutputDtoFromDomainEntity(cozinhaRepository.findAll());
 	}
 
-	@GetMapping("/{codigo}")
-	public CozinhaOutputDto buscar(@PathVariable Long codigo) {
-		Cozinha cozinha = cozinhaService.buscarOuFalhar(codigo);
+	@GetMapping("/{codCozinha}")
+	public CozinhaOutputDto buscar(@PathVariable Long codCozinha) {
+		Cozinha cozinha = cozinhaService.buscarOuFalhar(codCozinha);
 		
 		return cozinhaDtoAssembler.toOutputDtoFromDomainEntity(cozinha);
 	}
@@ -56,19 +56,19 @@ public class CozinhaController {
 		return cozinhaDtoAssembler.toOutputDtoFromDomainEntity(cozinhaService.salvar(cozinha));
 	}
 
-	@PutMapping("/{codigo}")
-	public CozinhaOutputDto atualizar(@PathVariable Long codigo, @RequestBody @Valid CozinhaInputDto cozinhaInput) {
-		Cozinha cozinhaAtual = cozinhaService.buscarOuFalhar(codigo);
+	@PutMapping("/{codCozinha}")
+	public CozinhaOutputDto atualizar(@PathVariable Long codCozinha, @RequestBody @Valid CozinhaInputDto cozinhaInput) {
+		Cozinha cozinhaAtual = cozinhaService.buscarOuFalhar(codCozinha);
 		
 		cozinhaDtoAssembler.copyFromInputDtoToDomainObject(cozinhaInput, cozinhaAtual);
 
 		return cozinhaDtoAssembler.toOutputDtoFromDomainEntity(cozinhaService.salvar(cozinhaAtual));
 	}
 
-	@DeleteMapping("/{codigo}")
+	@DeleteMapping("/{codCozinha}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long codigo) {
-		cozinhaService.excluir(codigo);
+	public void remover(@PathVariable Long codCozinha) {
+		cozinhaService.excluir(codCozinha);
 	}
 
 }

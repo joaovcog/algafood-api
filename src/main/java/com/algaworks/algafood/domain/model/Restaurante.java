@@ -72,12 +72,22 @@ public class Restaurante {
 	
 	private Boolean ativo = Boolean.TRUE;
 	
+	private Boolean aberto = Boolean.FALSE;
+	
 	public void ativar() {
 		setAtivo(true);
 	}
 	
 	public void inativar() {
 		setAtivo(false);
+	}
+	
+	public void abrir() {
+		setAberto(true);
+	}
+	
+	public void fechar() {
+		setAberto(false);
 	}
 	
 	public boolean vincularFormaPagamento(FormaPagamento formaPagamento) {

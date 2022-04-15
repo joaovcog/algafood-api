@@ -43,9 +43,9 @@ public class CidadeController {
 		return cidadeDtoAssembler.toCollectionOutputDtoFromDomainEntity(cidadeRepository.findAll());
 	}
 
-	@GetMapping("/{codigo}")
-	public CidadeOutputDto buscar(@PathVariable Long codigo) {
-		Cidade cidade = cidadeService.buscarOuFalhar(codigo);
+	@GetMapping("/{codCidade}")
+	public CidadeOutputDto buscar(@PathVariable Long codCidade) {
+		Cidade cidade = cidadeService.buscarOuFalhar(codCidade);
 		
 		return cidadeDtoAssembler.toOutputDtoFromDomainEntity(cidade);
 	}
@@ -62,9 +62,9 @@ public class CidadeController {
 		}
 	}
 
-	@PutMapping("/{codigo}")
-	public CidadeOutputDto atualizar(@PathVariable Long codigo, @RequestBody @Valid CidadeInputDto cidadeInput) {
-		Cidade cidadeAtual = cidadeService.buscarOuFalhar(codigo);
+	@PutMapping("/{codCidade}")
+	public CidadeOutputDto atualizar(@PathVariable Long codCidade, @RequestBody @Valid CidadeInputDto cidadeInput) {
+		Cidade cidadeAtual = cidadeService.buscarOuFalhar(codCidade);
 		
 		cidadeDtoAssembler.copyFromInputDtoToDomainObject(cidadeInput, cidadeAtual);
 
@@ -75,10 +75,10 @@ public class CidadeController {
 		}
 	}
 
-	@DeleteMapping("/{codigo}")
+	@DeleteMapping("/{codCidade}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long codigo) {
-		cidadeService.excluir(codigo);
+	public void remover(@PathVariable Long codCidade) {
+		cidadeService.excluir(codCidade);
 	}
 	
 }
