@@ -1,6 +1,6 @@
 package com.algaworks.algafood.domain.exception;
 
-public class UsuarioNaoVinculadoRestauranteException extends NegocioException {
+public class UsuarioNaoVinculadoRestauranteException extends EntidadeNaoVinculadaException {
 
 	private static final long serialVersionUID = 1L;
 
