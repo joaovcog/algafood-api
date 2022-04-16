@@ -124,4 +124,5 @@ public class Restaurante {
 	public boolean naoTemUsuarioResponsavel(Long codUsuario) {
 		return !temUsuarioResponsavel(codUsuario);
 	}
+	
 }

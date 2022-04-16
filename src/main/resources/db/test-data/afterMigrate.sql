@@ -13,6 +13,8 @@ delete from restaurantes_formas_pagamentos;
 delete from restaurantes_usuarios_responsaveis;
 delete from usuarios;
 delete from usuarios_grupos;
+delete from pedidos;
+delete from itens_pedidos;
 
 set foreign_key_checks = 1;
 
@@ -93,3 +95,27 @@ insert into grupos_permissoes (cod_grupo, cod_permissao) values (1, 1), (1, 2), 
 insert into usuarios_grupos (cod_usuario, cod_grupo) values (1, 1), (1, 2), (2, 3);
 
 insert into restaurantes_usuarios_responsaveis (cod_restaurante, cod_usuario) values (1, 1), (2, 1), (3, 2), (4, 3);
+
+
+
+insert into pedidos (codigo, cod_restaurante, cod_usuario_cliente, cod_forma_pagamento, endereco_cod_cidade, endereco_cep, 
+    	endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
+    	status, data_criacao, subtotal, taxa_frete, valor_total)
+	values (1, 1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil',
+		'CRIADO', utc_timestamp, 298.90, 10, 308.90);
+
+insert into itens_pedidos (codigo, cod_pedido, cod_produto, quantidade, preco_unitario, preco_total, observacao)
+	values (1, 1, 1, 1, 78.9, 78.9, null);
+
+insert into itens_pedidos (codigo, cod_pedido, cod_produto, quantidade, preco_unitario, preco_total, observacao)
+	values (2, 1, 2, 2, 110, 220, 'Menos picante, por favor');
+
+
+insert into pedidos (codigo, cod_restaurante, cod_usuario_cliente, cod_forma_pagamento, endereco_cod_cidade, endereco_cep, 
+        endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
+        status, data_criacao, subtotal, taxa_frete, valor_total)
+	values (2, 4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
+		'CRIADO', utc_timestamp, 79, 0, 79);
+
+insert into itens_pedidos (codigo, cod_pedido, cod_produto, quantidade, preco_unitario, preco_total, observacao)
+	values (3, 2, 6, 1, 79, 79, 'Ao ponto');
