@@ -1,5 +1,8 @@
 package com.algaworks.algafood.domain.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +60,30 @@ public class RestauranteService {
 		Restaurante restauranteAtual = buscarOuFalhar(codRestaurante);
 
 		restauranteAtual.inativar();
+	}
+	
+//	@Transactional
+//	public void ativar(List<Long> codRestaurantes) {
+//		codRestaurantes.forEach(this::ativar);
+//	}
+	
+//	@Transactional
+//	public void inativar(List<Long> codRestaurantes) {
+//		codRestaurantes.forEach(this::inativar);
+//	}
+	
+	@Transactional
+	public void ativar(List<Long> codRestaurantes) {
+		List<Restaurante> restaurantes = buscarOuFalhar(codRestaurantes);
+		
+		restaurantes.forEach(Restaurante::ativar);
+	}
+	
+	@Transactional
+	public void inativar(List<Long> codRestaurantes) {
+		List<Restaurante> restaurantes = buscarOuFalhar(codRestaurantes);
+		
+		restaurantes.forEach(Restaurante::inativar);
 	}
 	
 	@Transactional
@@ -119,5 +146,40 @@ public class RestauranteService {
 	public Restaurante buscarOuFalhar(Long codRestaurante) {
 		return restauranteRepository.findById(codRestaurante)
 				.orElseThrow(() -> new RestauranteNaoEncontradoException(codRestaurante));
+	}
+	
+	public List<Restaurante> buscarOuFalhar(List<Long> codRestaurantes) {
+		List<Restaurante> restaurantes = restauranteRepository.findByCodigoIn(codRestaurantes);
+		
+		if (codRestaurantes.size() != restaurantes.size()) {
+			List<Long> codInvalidos = obterCodigosRestaurantesNaoEncontrados(codRestaurantes, restaurantes);
+			
+			throw new RestauranteNaoEncontradoException(criarMensagemParaVariosRestaurantesNaoEncontrados(codInvalidos));
+		}
+		
+		return restaurantes;
+	}
+	
+	private List<Long> obterCodigosRestaurantesNaoEncontrados(List<Long> codRestaurantes, List<Restaurante> restaurantes) {
+		List<Long> codValidos = restaurantes.stream().map(r -> r.getCodigo()).collect(Collectors.toList());
+		List<Long> codInvalidos = codRestaurantes;
+		
+		codValidos.stream().forEach(c -> codInvalidos.remove(c));
+		
+		return codInvalidos;
+	}
+	
+	private String criarMensagemParaVariosRestaurantesNaoEncontrados(List<Long> codRestaurantes) {
+		final String mensagemFixa = "Não existe um cadastro de restaurante para os seguintes códigos: ";
+		
+		String mensagemFormatada = codRestaurantes.stream().map((Long c) -> {
+			if (c != null) {
+				return c.toString();
+			}
+			
+			return "";
+		}).collect(Collectors.joining(", ", mensagemFixa, ""));
+
+		return mensagemFormatada;
 	}
 }

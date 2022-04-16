@@ -15,6 +15,9 @@ public interface RestauranteRepository extends CustomJpaRepository<Restaurante, 
 	@Query("from Restaurante r join fetch r.cozinha")
 	List<Restaurante> findAll();
 	
+	@Query("from Restaurante r join fetch r.cozinha where r.codigo in :codigos")
+	List<Restaurante> findByCodigoIn(@Param("codigos") List<Long> codigos);
+	
 	List<Restaurante> findByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
 	
 	//@Query("from Restaurante where nome like %:nome% and cozinha.codigo = :codCozinha")

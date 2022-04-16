@@ -22,6 +22,7 @@ import com.algaworks.algafood.api.dto.output.RestauranteOutputDto;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.RestauranteService;
@@ -35,10 +36,10 @@ public class RestauranteController {
 
 	@Autowired
 	private RestauranteService restauranteService;
-	
+
 	@Autowired
 	private RestauranteDtoAssembler restauranteDtoAssembler;
-	
+
 	@GetMapping
 	public List<RestauranteOutputDto> listar() {
 		return restauranteDtoAssembler.toCollectionOutputDtoFromDomainEntity(restauranteRepository.findAll());
@@ -47,7 +48,7 @@ public class RestauranteController {
 	@GetMapping("/{codRestaurante}")
 	public RestauranteOutputDto buscar(@PathVariable Long codRestaurante) {
 		Restaurante restaurante = restauranteService.buscarOuFalhar(codRestaurante);
-		
+
 		return restauranteDtoAssembler.toOutputDtoFromDomainEntity(restaurante);
 	}
 
@@ -56,7 +57,7 @@ public class RestauranteController {
 	public RestauranteOutputDto adicionar(@RequestBody @Valid RestauranteInputDto restauranteInput) {
 		try {
 			Restaurante restaurante = restauranteDtoAssembler.toDomainObjectFromInputDto(restauranteInput);
-			
+
 			return restauranteDtoAssembler.toOutputDtoFromDomainEntity(restauranteService.salvar(restaurante));
 		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
@@ -64,39 +65,63 @@ public class RestauranteController {
 	}
 
 	@PutMapping("/{codRestaurante}")
-	public RestauranteOutputDto atualizar(@PathVariable Long codRestaurante, @RequestBody @Valid RestauranteInputDto restauranteInput) {
-		//Restaurante restaurante = restauranteDtoAssembler.toDomainObjectFromInputDto(restauranteInput, Restaurante.class);
+	public RestauranteOutputDto atualizar(@PathVariable Long codRestaurante,
+			@RequestBody @Valid RestauranteInputDto restauranteInput) {
+		// Restaurante restaurante =
+		// restauranteDtoAssembler.toDomainObjectFromInputDto(restauranteInput,
+		// Restaurante.class);
 		Restaurante restauranteAtual = restauranteService.buscarOuFalhar(codRestaurante);
 
 		restauranteDtoAssembler.copyFromInputDtoToDomainObject(restauranteInput, restauranteAtual);
-		
-		//BeanUtils.copyProperties(restaurante, restauranteAtual, "codigo", "formasPagamentos", "endereco", "dataCadastro", "produtos");
-		
+
+		// BeanUtils.copyProperties(restaurante, restauranteAtual, "codigo",
+		// "formasPagamentos", "endereco", "dataCadastro", "produtos");
+
 		try {
 			return restauranteDtoAssembler.toOutputDtoFromDomainEntity(restauranteService.salvar(restauranteAtual));
 		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
-	
+
 	@PutMapping("/{codRestaurante}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativar(@PathVariable Long codRestaurante) {
 		restauranteService.ativar(codRestaurante);
 	}
-	
+
 	@DeleteMapping("/{codRestaurante}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativar(@PathVariable Long codRestaurante) {
 		restauranteService.inativar(codRestaurante);
 	}
-	
+
+	@PutMapping("/ativacoes")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativarMultiplos(@RequestBody List<Long> codRestaurantes) {
+		try {
+			restauranteService.ativar(codRestaurantes);
+		} catch (RestauranteNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
+	}
+
+	@DeleteMapping("/ativacoes")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativarMultiplos(@RequestBody List<Long> codRestaurantes) {
+		try {
+			restauranteService.inativar(codRestaurantes);
+		} catch (RestauranteNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
+	}
+
 	@PutMapping("/{codRestaurante}/abertura")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void abrir(@PathVariable Long codRestaurante) {
 		restauranteService.abrir(codRestaurante);
 	}
-	
+
 	@PutMapping("/{codRestaurante}/fechamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void fechar(@PathVariable Long codRestaurante) {
@@ -104,48 +129,48 @@ public class RestauranteController {
 	}
 
 	/*
-	@PatchMapping("/{codigo}")
-	public Restaurante atualizarParcial(@PathVariable Long codigo, @RequestBody Map<String, Object> campos, HttpServletRequest request) {
-		Restaurante restauranteAtual = restauranteService.buscarOuFalhar(codigo);
-
-		merge(campos, restauranteAtual, request);
-		validate(restauranteAtual, "restaurante");
-
-		return atualizar(codigo, restauranteAtual);
-	}
-
-	private void validate(Restaurante restaurante, String objectName) {
-		BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, objectName);
-		
-		validator.validate(restaurante, bindingResult);
-		
-		if (bindingResult.hasErrors()) {
-			throw new ValidacaoException(bindingResult);
-		}
-	}
-
-	private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino, HttpServletRequest request) {
-		ServletServerHttpRequest serverHttpRequest = new ServletServerHttpRequest(request);
-		
-		try {
-			ObjectMapper objectMapper = new ObjectMapper();
-			objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
-			objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-
-			Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);
-
-			dadosOrigem.forEach((chave, valor) -> {
-				Field field = ReflectionUtils.findField(Restaurante.class, chave);
-				field.setAccessible(true);
-
-				Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
-
-				ReflectionUtils.setField(field, restauranteDestino, novoValor);
-			});
-		} catch (IllegalArgumentException ex) {
-			Throwable rootCause = ExceptionUtils.getRootCause(ex);
-			throw new HttpMessageNotReadableException(ex.getMessage(), rootCause, serverHttpRequest);
-		}
-	}
-	*/
+	 * @PatchMapping("/{codigo}") public Restaurante atualizarParcial(@PathVariable
+	 * Long codigo, @RequestBody Map<String, Object> campos, HttpServletRequest
+	 * request) { Restaurante restauranteAtual =
+	 * restauranteService.buscarOuFalhar(codigo);
+	 * 
+	 * merge(campos, restauranteAtual, request); validate(restauranteAtual,
+	 * "restaurante");
+	 * 
+	 * return atualizar(codigo, restauranteAtual); }
+	 * 
+	 * private void validate(Restaurante restaurante, String objectName) {
+	 * BeanPropertyBindingResult bindingResult = new
+	 * BeanPropertyBindingResult(restaurante, objectName);
+	 * 
+	 * validator.validate(restaurante, bindingResult);
+	 * 
+	 * if (bindingResult.hasErrors()) { throw new ValidacaoException(bindingResult);
+	 * } }
+	 * 
+	 * private void merge(Map<String, Object> dadosOrigem, Restaurante
+	 * restauranteDestino, HttpServletRequest request) { ServletServerHttpRequest
+	 * serverHttpRequest = new ServletServerHttpRequest(request);
+	 * 
+	 * try { ObjectMapper objectMapper = new ObjectMapper();
+	 * objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
+	 * true);
+	 * objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+	 * true);
+	 * 
+	 * Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem,
+	 * Restaurante.class);
+	 * 
+	 * dadosOrigem.forEach((chave, valor) -> { Field field =
+	 * ReflectionUtils.findField(Restaurante.class, chave);
+	 * field.setAccessible(true);
+	 * 
+	 * Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
+	 * 
+	 * ReflectionUtils.setField(field, restauranteDestino, novoValor); }); } catch
+	 * (IllegalArgumentException ex) { Throwable rootCause =
+	 * ExceptionUtils.getRootCause(ex); throw new
+	 * HttpMessageNotReadableException(ex.getMessage(), rootCause,
+	 * serverHttpRequest); } }
+	 */
 }
