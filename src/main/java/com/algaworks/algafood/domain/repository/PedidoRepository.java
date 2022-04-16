@@ -9,10 +9,14 @@ import com.algaworks.algafood.domain.model.Pedido;
 
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 	
-	@Query("from Pedido p join fetch p.usuarioCliente "
-			+ "join fetch p.restaurante "
-			+ "join fetch p.restaurante.cozinha "
-			+ "join fetch p.formaPagamento")
+	@Query("from Pedido p "
+			+ "join fetch p.usuarioCliente "
+			+ "join fetch p.restaurante r "
+			+ "join fetch r.cozinha "
+			+ "join fetch p.formaPagamento "
+			+ "join fetch p.enderecoEntrega e "
+			+ "join fetch e.cidade c "
+			+ "join fetch c.estado")
 	List<Pedido> findAll();
 	
 }
