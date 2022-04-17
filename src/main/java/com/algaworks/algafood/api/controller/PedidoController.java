@@ -46,9 +46,9 @@ public class PedidoController {
 		return pedidoResumoDtoAssembler.toCollectionOutputDtoFromDomainEntity(pedidos);
 	}
 
-	@GetMapping("/{codPedido}")
-	public PedidoOutputDto buscar(@PathVariable Long codPedido) {
-		Pedido pedido = pedidoService.buscarOuFalhar(codPedido);
+	@GetMapping("/{identificadorPedido}")
+	public PedidoOutputDto buscar(@PathVariable String identificadorPedido) {
+		Pedido pedido = pedidoService.buscarOuFalhar(identificadorPedido);
 
 		return pedidoDtoAssembler.toOutputDtoFromDomainEntity(pedido);
 	}
@@ -71,22 +71,22 @@ public class PedidoController {
 		}
 	}
 
-	@PutMapping("/{codPedido}/confirmacao")
+	@PutMapping("/{identificadorPedido}/confirmacao")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void confirmar(@PathVariable Long codPedido) {
-		pedidoService.confirmar(codPedido);
+	public void confirmar(@PathVariable String identificadorPedido) {
+		pedidoService.confirmar(identificadorPedido);
 	}
 
-	@PutMapping("/{codPedido}/entrega")
+	@PutMapping("/{identificadorPedido}/entrega")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void entregar(@PathVariable Long codPedido) {
-		pedidoService.entregar(codPedido);
+	public void entregar(@PathVariable String identificadorPedido) {
+		pedidoService.entregar(identificadorPedido);
 	}
 
-	@PutMapping("/{codPedido}/cancelamento")
+	@PutMapping("/{identificadorPedido}/cancelamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void cancelar(@PathVariable Long codPedido) {
-		pedidoService.cancelar(codPedido);
+	public void cancelar(@PathVariable String identificadorPedido) {
+		pedidoService.cancelar(identificadorPedido);
 	}
 
 }

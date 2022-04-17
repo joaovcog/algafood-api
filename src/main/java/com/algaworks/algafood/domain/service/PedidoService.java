@@ -1,8 +1,5 @@
 package com.algaworks.algafood.domain.service;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +13,6 @@ import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.Restaurante;
-import com.algaworks.algafood.domain.model.StatusPedido;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
 
@@ -53,28 +49,28 @@ public class PedidoService {
 	}
 
 	@Transactional
-	public void confirmar(Long codPedido) {
-		Pedido pedido = buscarOuFalhar(codPedido);
+	public void confirmar(String identificadorPedido) {
+		Pedido pedido = buscarOuFalhar(identificadorPedido);
 		
 		pedido.confirmar();
 	}
 	
 	@Transactional
-	public void entregar(Long codPedido) {
-		Pedido pedido = buscarOuFalhar(codPedido);
+	public void entregar(String identificadorPedido) {
+		Pedido pedido = buscarOuFalhar(identificadorPedido);
 		
 		pedido.entregar();
 	}
 	
 	@Transactional
-	public void cancelar(Long codPedido) {
-		Pedido pedido = buscarOuFalhar(codPedido);
+	public void cancelar(String identificadorPedido) {
+		Pedido pedido = buscarOuFalhar(identificadorPedido);
 		
 		pedido.cancelar();
 	}
 
-	public Pedido buscarOuFalhar(Long codPedido) {
-		return pedidoRepository.findById(codPedido).orElseThrow(() -> new PedidoNaoEncontradoException(codPedido));
+	public Pedido buscarOuFalhar(String identificadorPedido) {
+		return pedidoRepository.findByIdentificador(identificadorPedido).orElseThrow(() -> new PedidoNaoEncontradoException(identificadorPedido));
 	}
 
 	public List<Pedido> listar() {

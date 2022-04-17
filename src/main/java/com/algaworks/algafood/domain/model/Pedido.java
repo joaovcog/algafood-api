@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -38,6 +40,8 @@ public class Pedido {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private Long codigo;
+	
+	private String identificador;
 
 	@ManyToOne
 	@JoinColumn(name = "cod_usuario_cliente", nullable = false)
@@ -110,9 +114,9 @@ public class Pedido {
 			final String mensagem;
 
 			if (getStatus().equals(novoStatus)) {
-				mensagem = String.format("Pedido %d já foi %s.", getCodigo(), novoStatus.getDescricao());
+				mensagem = String.format("Pedido %s já foi %s.", getIdentificador(), novoStatus.getDescricao());
 			} else {
-				mensagem = String.format("Status do pedido %d não pode ser alterado de %s para %s.", getCodigo(),
+				mensagem = String.format("Status do pedido %s não pode ser alterado de %s para %s.", getIdentificador(),
 						getStatus().getDescricao(), novoStatus.getDescricao());
 			}
 
@@ -120,6 +124,11 @@ public class Pedido {
 		}
 
 		this.status = novoStatus;
+	}
+	
+	@PrePersist
+	private void gerarIdentificador() {
+		setIdentificador(UUID.randomUUID().toString());
 	}
 
 }

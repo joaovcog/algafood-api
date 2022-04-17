@@ -1,6 +1,7 @@
 package com.algaworks.algafood.domain.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -8,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import com.algaworks.algafood.domain.model.Pedido;
 
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
+	
+	Optional<Pedido> findByIdentificador(String identificador);
 	
 	@Query("from Pedido p "
 			+ "join fetch p.usuarioCliente "

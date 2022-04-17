@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class PedidoResumoOutputDto {
 
-	private Long codigo;
+	private String identificador;
 	private UsuarioOutputDto usuarioCliente;
 	private RestauranteResumoOutputDto restaurante;
 	private BigDecimal subtotal;

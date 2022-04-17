@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class PedidoOutputDto {
 
-	private Long codigo;
+	private String identificador;
 	private UsuarioOutputDto usuarioCliente;
 	private RestauranteResumoOutputDto restaurante;
 	private FormaPagamentoOutputDto formaPagamento;
