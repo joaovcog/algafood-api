@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -68,6 +69,24 @@ public class PedidoController {
 		} catch (EntidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
+	}
+
+	@PutMapping("/{codPedido}/confirmacao")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void confirmar(@PathVariable Long codPedido) {
+		pedidoService.confirmar(codPedido);
+	}
+
+	@PutMapping("/{codPedido}/entrega")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void entregar(@PathVariable Long codPedido) {
+		pedidoService.entregar(codPedido);
+	}
+
+	@PutMapping("/{codPedido}/cancelamento")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void cancelar(@PathVariable Long codPedido) {
+		pedidoService.cancelar(codPedido);
 	}
 
 }
