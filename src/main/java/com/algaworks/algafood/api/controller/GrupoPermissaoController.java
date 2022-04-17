@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.api.assembler.PermissaoDtoAssembler;
+import com.algaworks.algafood.api.assembler.impl.PermissaoDtoAssembler;
 import com.algaworks.algafood.api.dto.output.PermissaoOutputDto;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.service.GrupoService;

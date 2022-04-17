@@ -28,6 +28,8 @@ alter table permissoes auto_increment = 1;
 alter table produtos auto_increment = 1;
 alter table restaurantes auto_increment = 1;
 alter table usuarios auto_increment = 1;
+alter table pedidos auto_increment = 1;
+alter table itens_pedidos auto_increment = 1;
 
 
 insert into cozinhas (nome) values ('Brasileira');

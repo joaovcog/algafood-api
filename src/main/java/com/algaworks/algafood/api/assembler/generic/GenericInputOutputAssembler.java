@@ -1,4 +1,4 @@
-package com.algaworks.algafood.api.assembler;
+package com.algaworks.algafood.api.assembler.generic;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import lombok.Getter;
 
 @Getter
-public abstract class GenericAssembler<T, I, O> {
+public abstract class GenericInputOutputAssembler<T, I, O> {
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -21,7 +21,7 @@ public abstract class GenericAssembler<T, I, O> {
 	private final Class<O> outputDtoClass;
 	
 	@SuppressWarnings("unchecked")
-	public GenericAssembler() {
+	public GenericInputOutputAssembler() {
 		ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass();
 		
 		this.entityClass = (Class<T>) type.getActualTypeArguments()[0];

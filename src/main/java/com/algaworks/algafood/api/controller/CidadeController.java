@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.api.assembler.CidadeDtoAssembler;
+import com.algaworks.algafood.api.assembler.impl.CidadeDtoAssembler;
 import com.algaworks.algafood.api.dto.input.CidadeInputDto;
 import com.algaworks.algafood.api.dto.output.CidadeOutputDto;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;

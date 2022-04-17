@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.api.assembler.UsuarioDtoAssembler;
+import com.algaworks.algafood.api.assembler.impl.UsuarioDtoAssembler;
 import com.algaworks.algafood.api.dto.output.UsuarioOutputDto;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;

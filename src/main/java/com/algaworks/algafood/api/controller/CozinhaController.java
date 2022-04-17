@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.api.assembler.CozinhaDtoAssembler;
+import com.algaworks.algafood.api.assembler.impl.CozinhaDtoAssembler;
 import com.algaworks.algafood.api.dto.input.CozinhaInputDto;
 import com.algaworks.algafood.api.dto.output.CozinhaOutputDto;
 import com.algaworks.algafood.domain.model.Cozinha;

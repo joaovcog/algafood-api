@@ -1,14 +1,15 @@
-package com.algaworks.algafood.api.assembler;
+package com.algaworks.algafood.api.assembler.impl;
 
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.assembler.generic.GenericInputOutputAssembler;
 import com.algaworks.algafood.api.dto.input.CidadeInputDto;
 import com.algaworks.algafood.api.dto.output.CidadeOutputDto;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Estado;
 
 @Component
-public class CidadeDtoAssembler extends GenericAssembler<Cidade, CidadeInputDto, CidadeOutputDto> {
+public class CidadeDtoAssembler extends GenericInputOutputAssembler<Cidade, CidadeInputDto, CidadeOutputDto> {
 	
 	@Override
 	public void copyFromInputDtoToDomainObject(CidadeInputDto inputDto, Cidade entity) {
