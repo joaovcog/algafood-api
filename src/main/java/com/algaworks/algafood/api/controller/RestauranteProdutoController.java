@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,50 +30,59 @@ public class RestauranteProdutoController {
 
 	@Autowired
 	private ProdutoService produtoService;
-	
+
 	@Autowired
 	private RestauranteService restauranteService;
-	
+
 	@Autowired
 	private ProdutoDtoAssembler produtoDtoAssembler;
-	
+
 	@GetMapping
-	public List<ProdutoOutputDto> listar(@PathVariable Long codRestaurante) {
+	public List<ProdutoOutputDto> listar(@PathVariable Long codRestaurante,
+			@RequestParam(required = false) boolean incluirInativos) {
 		Restaurante restaurante = restauranteService.buscarOuFalhar(codRestaurante);
-		
-		List<Produto> produtos = produtoService.listarPorRestaurante(restaurante);
-		
+
+		List<Produto> produtos = null;
+
+		if (incluirInativos) {
+			produtos = produtoService.listarPorRestaurante(restaurante);
+		} else {
+			produtos = produtoService.listarAtivosPorRestaurante(restaurante);
+		}
+
 		return produtoDtoAssembler.toCollectionOutputDtoFromDomainEntity(produtos);
 	}
-	
+
 	@GetMapping("/{codProduto}")
 	private ProdutoOutputDto buscar(@PathVariable Long codRestaurante, @PathVariable Long codProduto) {
 		Produto produto = produtoService.buscarOuFalhar(codRestaurante, codProduto);
-		
+
 		return produtoDtoAssembler.toOutputDtoFromDomainEntity(produto);
 	}
-	
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ProdutoOutputDto adicionar(@PathVariable Long codRestaurante, @RequestBody @Valid ProdutoInputDto produtoInput) {
+	public ProdutoOutputDto adicionar(@PathVariable Long codRestaurante,
+			@RequestBody @Valid ProdutoInputDto produtoInput) {
 		Restaurante restaurante = restauranteService.buscarOuFalhar(codRestaurante);
-		
+
 		Produto produto = produtoDtoAssembler.toDomainObjectFromInputDto(produtoInput);
 		produto.setRestaurante(restaurante);
-		
+
 		produto = produtoService.salvar(produto);
-		
+
 		return produtoDtoAssembler.toOutputDtoFromDomainEntity(produto);
 	}
-	
+
 	@PutMapping("/{codProduto}")
-	public ProdutoOutputDto atualizar(@PathVariable Long codRestaurante, @PathVariable Long codProduto, @RequestBody @Valid ProdutoInputDto produtoInput) {
+	public ProdutoOutputDto atualizar(@PathVariable Long codRestaurante, @PathVariable Long codProduto,
+			@RequestBody @Valid ProdutoInputDto produtoInput) {
 		Produto produtoAtual = produtoService.buscarOuFalhar(codRestaurante, codProduto);
-		
+
 		produtoDtoAssembler.copyFromInputDtoToDomainObject(produtoInput, produtoAtual);
-		
+
 		produtoAtual = produtoService.salvar(produtoAtual);
-		
+
 		return produtoDtoAssembler.toOutputDtoFromDomainEntity(produtoAtual);
 	}
 }

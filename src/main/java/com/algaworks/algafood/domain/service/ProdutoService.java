@@ -28,7 +28,11 @@ public class ProdutoService {
 	}
 	
 	public List<Produto> listarPorRestaurante(Restaurante restaurante) {
-		return produtoRepository.findByRestaurante(restaurante);
+		return produtoRepository.findTodosByRestaurante(restaurante);
+	}
+	
+	public List<Produto> listarAtivosPorRestaurante(Restaurante restaurante) {
+		return produtoRepository.findAtivosByRestaurante(restaurante);
 	}
 
 	/*@Transactional
