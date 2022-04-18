@@ -24,6 +24,7 @@ import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.Usuario;
+import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
 import com.algaworks.algafood.domain.service.PedidoService;
 
 @RestController
@@ -40,8 +41,8 @@ public class PedidoController {
 	private PedidoResumoDtoAssembler pedidoResumoDtoAssembler;
 
 	@GetMapping
-	public List<PedidoResumoOutputDto> listar() {
-		List<Pedido> pedidos = pedidoService.listar();
+	public List<PedidoResumoOutputDto> pesquisar(PedidoFilter filtro) {
+		List<Pedido> pedidos = pedidoService.listar(filtro);
 
 		return pedidoResumoDtoAssembler.toCollectionOutputDtoFromDomainEntity(pedidos);
 	}

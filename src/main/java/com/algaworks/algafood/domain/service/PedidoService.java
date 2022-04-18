@@ -15,6 +15,8 @@ import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
+import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
+import com.algaworks.algafood.infrastructure.repository.spec.PedidoSpecs;
 
 @Service
 public class PedidoService {
@@ -73,8 +75,8 @@ public class PedidoService {
 		return pedidoRepository.findByIdentificador(identificadorPedido).orElseThrow(() -> new PedidoNaoEncontradoException(identificadorPedido));
 	}
 
-	public List<Pedido> listar() {
-		return pedidoRepository.findAll();
+	public List<Pedido> listar(PedidoFilter filtro) {
+		return pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro));
 	}
 
 	private void validarPedido(Pedido pedido) {
