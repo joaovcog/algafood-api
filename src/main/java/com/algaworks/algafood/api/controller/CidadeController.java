@@ -5,6 +5,10 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,8 +43,15 @@ public class CidadeController {
 	private CidadeDtoAssembler cidadeDtoAssembler;
 	
 	@GetMapping
-	public List<CidadeOutputDto> listar() {
-		return cidadeDtoAssembler.toCollectionOutputDtoFromDomainEntity(cidadeRepository.findAll());
+	public Page<CidadeOutputDto> listar(@PageableDefault(size = 5) Pageable pageable) {
+		Page<Cidade> cidadesPage = cidadeRepository.findAllPaginado(pageable);
+		
+		List<CidadeOutputDto> cidadesOutputDto = cidadeDtoAssembler
+				.toCollectionOutputDtoFromDomainEntity(cidadesPage.getContent());
+		
+		Page<CidadeOutputDto> cidadesOutputDtoPage = new PageImpl<>(cidadesOutputDto, pageable, cidadesPage.getTotalElements());
+		
+		return cidadesOutputDtoPage;
 	}
 
 	@GetMapping("/{codCidade}")

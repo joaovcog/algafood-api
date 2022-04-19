@@ -1,8 +1,8 @@
 package com.algaworks.algafood.domain.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,8 +75,8 @@ public class PedidoService {
 		return pedidoRepository.findByIdentificador(identificadorPedido).orElseThrow(() -> new PedidoNaoEncontradoException(identificadorPedido));
 	}
 
-	public List<Pedido> listar(PedidoFilter filtro) {
-		return pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro));
+	public Page<Pedido> listar(PedidoFilter filtro, Pageable pageable) {
+		return pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
 	}
 
 	private void validarPedido(Pedido pedido) {
