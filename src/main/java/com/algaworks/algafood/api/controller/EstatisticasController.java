@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 import com.algaworks.algafood.domain.model.dto.VendaDiaria;
-import com.algaworks.algafood.domain.service.VendaQueryService;
+import com.algaworks.algafood.domain.repository.EstatisticaVendaRepository;
 
 @RestController
 @RequestMapping(path = "/estatisticas")
 public class EstatisticasController {
 	
 	@Autowired
-	private VendaQueryService vendaQueryService;
+	private EstatisticaVendaRepository estatisticaVendaRepository;
 	
 	@GetMapping("/vendas-diarias")
 	public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro) {
-		return vendaQueryService.consultarVendasDiarias(filtro);
+		return estatisticaVendaRepository.consultarVendasDiarias(filtro);
 	}
 	
 }

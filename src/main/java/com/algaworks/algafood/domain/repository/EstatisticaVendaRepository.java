@@ -1,12 +1,15 @@
-package com.algaworks.algafood.domain.service;
+package com.algaworks.algafood.domain.repository;
 
 import java.util.List;
+
+import org.springframework.stereotype.Repository;
 
 import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 import com.algaworks.algafood.domain.model.dto.VendaDiaria;
 
-public interface VendaQueryService {
-
+@Repository
+public interface EstatisticaVendaRepository {
+	
 	List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro);
 	
 }
