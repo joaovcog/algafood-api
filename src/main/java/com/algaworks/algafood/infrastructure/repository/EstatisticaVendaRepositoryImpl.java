@@ -51,7 +51,7 @@ public class EstatisticaVendaRepositoryImpl implements EstatisticaVendaRepositor
 			predicates.add(builder.lessThanOrEqualTo(root.get("dataCriacao"), filtro.getDataCriacaoFim()));
 		}
 		
-		//predicates.add(root.get("status").in(StatusPedido.CONFIRMADO, StatusPedido.ENTREGUE));
+		predicates.add(root.get("status").in(StatusPedido.CONFIRMADO, StatusPedido.ENTREGUE));
 		
 		query.where(predicates.toArray(new Predicate[0]));
 		
