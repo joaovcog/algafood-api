@@ -20,4 +20,16 @@ public class VendaDiariaFilter {
 	@DateTimeFormat(iso = ISO.DATE_TIME)
 	private OffsetDateTime dataCriacaoFim;
 	
+	public boolean temCodRestaurante() {
+		return codRestaurante != null;
+	}
+	
+	public boolean temDataCriacaoInicio() {
+		return dataCriacaoInicio != null;
+	}
+	
+	public boolean temDataCriacaoFim() {
+		return dataCriacaoFim != null;
+	}
+	
 }
