@@ -10,6 +10,6 @@ import com.algaworks.algafood.domain.model.dto.VendaDiaria;
 @Repository
 public interface EstatisticaVendaRepository {
 	
-	List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro);
+	List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro, String timeOffset);
 	
 }
