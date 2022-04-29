@@ -34,4 +34,12 @@ public class ProdutoFoto {
 
 	private Long tamanho;
 
+	public Long getCodRestaurante() {
+		if (getProduto() != null) {
+			return getProduto().getRestaurante().getCodigo();
+		}
+		
+		return null;
+	}
+	
 }
