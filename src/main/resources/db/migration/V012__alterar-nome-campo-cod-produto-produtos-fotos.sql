@@ -1,0 +1,1 @@
+ALTER TABLE produtos_fotos RENAME COLUMN cod_produto TO produto_codigo;

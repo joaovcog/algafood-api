@@ -19,7 +19,7 @@ public class ProdutoFoto {
 
 	@EqualsAndHashCode.Include
 	@Id
-	@Column(name = "cod_produto")
+	@Column(name = "produto_codigo")
 	private Long codigo;
 
 	@OneToOne(fetch = FetchType.LAZY)
