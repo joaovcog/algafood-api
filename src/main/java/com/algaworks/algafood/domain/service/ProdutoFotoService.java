@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
+import java.io.InputStream;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.algaworks.algafood.domain.model.ProdutoFoto;
 import com.algaworks.algafood.domain.repository.ProdutoRepository;
+import com.algaworks.algafood.domain.service.FotoStorageService.NovaFoto;
 
 @Service
 public class ProdutoFotoService {
@@ -15,18 +17,39 @@ public class ProdutoFotoService {
 	@Autowired
 	private ProdutoRepository produtoRepository;
 	
+	@Autowired
+	private FotoStorageService fotoStorageService;
+	
 	@Transactional
-	public ProdutoFoto salvar(ProdutoFoto produtoFoto) {
+	public ProdutoFoto salvar(ProdutoFoto produtoFoto, InputStream dadosArquivo) {
 		Long codRestaurante = produtoFoto.getCodRestaurante();
 		Long codProduto = produtoFoto.getProduto().getCodigo();
+		String nomeNovoArquivo = fotoStorageService.gerarNomeArquivo(produtoFoto.getNomeArquivo());
+		String nomeArquivoExistente = null;
 		
 		Optional<ProdutoFoto> fotoExistente = produtoRepository.findFotoById(codRestaurante, codProduto);
 		
 		if (fotoExistente.isPresent()) {
+			nomeArquivoExistente = fotoExistente.get().getNomeArquivo();
 			produtoRepository.delete(fotoExistente.get());
 		}
 		
-		return produtoRepository.save(produtoFoto);
+		produtoFoto.setNomeArquivo(nomeNovoArquivo);
+		produtoFoto = produtoRepository.save(produtoFoto);
+		produtoRepository.flush();
+		
+		NovaFoto novaFoto = NovaFoto.builder()
+				.nomeArquivo(produtoFoto.getNomeArquivo())
+				.inputStream(dadosArquivo)
+				.build();
+		
+		if (nomeArquivoExistente != null) {
+			fotoStorageService.remover(nomeArquivoExistente);
+		}
+		
+		fotoStorageService.substituir(nomeArquivoExistente, novaFoto);
+		
+		return produtoFoto;
 	}
 	
 }
