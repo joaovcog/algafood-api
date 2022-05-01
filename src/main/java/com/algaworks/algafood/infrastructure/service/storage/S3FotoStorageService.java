@@ -3,18 +3,18 @@ package com.algaworks.algafood.infrastructure.service.storage;
 import java.net.URL;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.algaworks.algafood.core.storage.StorageProperties;
 import com.algaworks.algafood.domain.service.FotoStorageService;
 import com.algaworks.algafood.infrastructure.service.storage.exception.StorageException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.AccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.GroupGrantee;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.Permission;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
-@Service
 public class S3FotoStorageService implements FotoStorageService {
 
 	@Autowired
@@ -25,6 +25,9 @@ public class S3FotoStorageService implements FotoStorageService {
 
 	@Override
 	public void armazenar(NovaFoto novaFoto) {
+		AccessControlList acl = new AccessControlList();
+        acl.grantPermission(GroupGrantee.AllUsers, Permission.Read);
+		
 		try {
 			String caminhoArquivo = getCaminhoArquivo(novaFoto.getNomeArquivo());
 			ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -33,7 +36,8 @@ public class S3FotoStorageService implements FotoStorageService {
 
 			PutObjectRequest putObjectRequest = new PutObjectRequest(storageProperties.getS3().getBucket(),
 					caminhoArquivo, novaFoto.getInputStream(), objectMetadata)
-							.withCannedAcl(CannedAccessControlList.PublicRead);
+							.withAccessControlList(acl);
+							//.withCannedAcl(CannedAccessControlList.PublicRead);
 
 			amazonS3.putObject(putObjectRequest);
 		} catch (Exception e) {
