@@ -16,6 +16,7 @@ import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
+import com.algaworks.algafood.domain.service.EnvioEmailService.Mensagem;
 import com.algaworks.algafood.infrastructure.repository.spec.PedidoSpecs;
 
 @Service
@@ -38,6 +39,9 @@ public class PedidoService {
 
 	@Autowired
 	private FormaPagamentoService formaPagamentoService;
+	
+	@Autowired
+	private EnvioEmailService envioEmailService;
 
 	@Transactional
 	public Pedido emitir(Pedido pedido) {
@@ -55,6 +59,14 @@ public class PedidoService {
 		Pedido pedido = buscarOuFalhar(identificadorPedido);
 		
 		pedido.confirmar();
+		
+		var mensagem = Mensagem.builder()
+				.assunto(pedido.getRestaurante().getNome() + " - Pedido confirmado")
+				.corpo("O pedido de código <strong>" + pedido.getCodigo() + "</strong> foi confirmado!")
+				.destinatario(pedido.getUsuarioCliente().getEmail())
+				.build();
+		
+		envioEmailService.enviar(mensagem);
 	}
 	
 	@Transactional
