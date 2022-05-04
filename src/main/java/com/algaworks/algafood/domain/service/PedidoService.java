@@ -62,7 +62,8 @@ public class PedidoService {
 		
 		var mensagem = Mensagem.builder()
 				.assunto(pedido.getRestaurante().getNome() + " - Pedido confirmado")
-				.corpo("O pedido de código <strong>" + pedido.getCodigo() + "</strong> foi confirmado!")
+				.corpo("pedido-confirmado.html")
+				.modeloTemplate("pedido", pedido)
 				.destinatario(pedido.getUsuarioCliente().getEmail())
 				.build();
 		
