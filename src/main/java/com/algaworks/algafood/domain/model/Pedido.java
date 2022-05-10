@@ -2,7 +2,6 @@ package com.algaworks.algafood.domain.model;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +25,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
+import com.algaworks.algafood.domain.event.PedidoCanceladoEvent;
 import com.algaworks.algafood.domain.event.PedidoConfirmadoEvent;
 import com.algaworks.algafood.domain.exception.NegocioException;
 
@@ -98,19 +98,21 @@ public class Pedido extends AbstractAggregateRoot<Pedido> {
 
 	public void confirmar() {
 		setStatus(StatusPedido.CONFIRMADO);
-		setDataConfirmacao(OffsetDateTime.now(ZoneOffset.UTC));
+		setDataConfirmacao(OffsetDateTime.now());
 		
 		registerEvent(new PedidoConfirmadoEvent(this));
 	}
 
 	public void entregar() {
 		setStatus(StatusPedido.ENTREGUE);
-		setDataEntrega(OffsetDateTime.now(ZoneOffset.UTC));
+		setDataEntrega(OffsetDateTime.now());
 	}
 
 	public void cancelar() {
 		setStatus(StatusPedido.CANCELADO);
-		setDataCancelamento(OffsetDateTime.now(ZoneOffset.UTC));
+		setDataCancelamento(OffsetDateTime.now());
+		
+		registerEvent(new PedidoCanceladoEvent(this));
 	}
 
 	private void setStatus(StatusPedido novoStatus) {

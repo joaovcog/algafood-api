@@ -71,6 +71,8 @@ public class PedidoService {
 		Pedido pedido = buscarOuFalhar(identificadorPedido);
 		
 		pedido.cancelar();
+		
+		pedidoRepository.save(pedido);
 	}
 
 	public Pedido buscarOuFalhar(String identificadorPedido) {

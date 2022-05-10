@@ -2,27 +2,26 @@ package com.algaworks.algafood.domain.listener;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.algaworks.algafood.domain.event.PedidoConfirmadoEvent;
+import com.algaworks.algafood.domain.event.PedidoCanceladoEvent;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.service.EnvioEmailService;
 import com.algaworks.algafood.domain.service.EnvioEmailService.Mensagem;
 
 @Component
-public class NotificacaoClientePedidoConfirmadoListener {
+public class NotificacaoClientePedidoCanceladoListener {
 
 	@Autowired
 	private EnvioEmailService envioEmailService;
 	
-	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-	public void aoConfirmarPedido(PedidoConfirmadoEvent event) {
+	@TransactionalEventListener
+	public void aoCancelarPedido(PedidoCanceladoEvent event) {
 		Pedido pedido = event.getPedido();
 		
 		var mensagem = Mensagem.builder()
-				.assunto(pedido.getRestaurante().getNome() + " - Pedido confirmado")
-				.corpo("pedido-confirmado.html").modeloTemplate("pedido", pedido)
+				.assunto(pedido.getRestaurante().getNome() + " - Pedido cancelado")
+				.corpo("pedido-cancelado.html").modeloTemplate("pedido", pedido)
 				.destinatario(pedido.getUsuarioCliente().getEmail()).build();
 
 		envioEmailService.enviar(mensagem);
