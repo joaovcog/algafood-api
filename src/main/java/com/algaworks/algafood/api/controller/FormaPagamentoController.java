@@ -1,11 +1,14 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,17 +36,27 @@ public class FormaPagamentoController {
 	private FormaPagamentoDtoAssembler formaPagamentoDtoAssembler;
 	
 	@GetMapping
-	public List<FormaPagamentoOutputDto> listar() {
+	public ResponseEntity<List<FormaPagamentoOutputDto>> listar() {
 		List<FormaPagamento> formasPagamentos = formaPagamentoService.listar();
 		
-		return formaPagamentoDtoAssembler.toCollectionOutputDtoFromDomainEntity(formasPagamentos);
+		List<FormaPagamentoOutputDto> formasPagamentosOutputDto = formaPagamentoDtoAssembler.toCollectionOutputDtoFromDomainEntity(formasPagamentos);
+		
+		return ResponseEntity
+				.ok()
+				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+				.body(formasPagamentosOutputDto);
 	}
 	
 	@GetMapping("/{codFormaPagamento}")
-	public FormaPagamentoOutputDto buscar(@PathVariable Long codFormaPagamento) {
+	public ResponseEntity<FormaPagamentoOutputDto> buscar(@PathVariable Long codFormaPagamento) {
 		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(codFormaPagamento);
 		
-		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamento);
+		FormaPagamentoOutputDto formaPagamentoOutputDto = formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamento);
+		
+		return ResponseEntity
+				.ok()
+				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+				.body(formaPagamentoOutputDto);
 	}
 	
 	@PostMapping
