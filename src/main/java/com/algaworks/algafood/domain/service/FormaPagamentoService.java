@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,14 @@ public class FormaPagamentoService {
 	
 	public List<FormaPagamento> listar() {
 		return formaPagamentoRepository.findAll();
+	}
+	
+	public OffsetDateTime getDataUltimaAtualizacao() {
+		return formaPagamentoRepository.getDataUltimaAtualizacao();
+	}
+	
+	public OffsetDateTime getDataAtualizacao(Long codFormaPagamento) {
+		return formaPagamentoRepository.getDataAtualizacaoByCodigo(codFormaPagamento);
 	}
 
 	@Transactional

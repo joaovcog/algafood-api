@@ -59,9 +59,9 @@ insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atu
 insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao, ativo, aberto) values ('Bar da Maria', 6, 1, utc_timestamp, utc_timestamp, true, true);
 insert into restaurantes (nome, taxa_frete, cod_cozinha, data_cadastro, data_atualizacao, ativo, aberto) values ('Chinese Express', 3, 3, utc_timestamp, utc_timestamp, true, true);
 
-insert into formas_pagamentos (descricao) values ('Cartão de Crédito');
-insert into formas_pagamentos (descricao) values ('Dinheiro');
-insert into formas_pagamentos (descricao) values ('Pix');
+insert into formas_pagamentos (descricao, data_atualizacao) values ('Cartão de Crédito', utc_timestamp);
+insert into formas_pagamentos (descricao, data_atualizacao) values ('Dinheiro', utc_timestamp);
+insert into formas_pagamentos (descricao, data_atualizacao) values ('Pix', utc_timestamp);
 
 insert into restaurantes_formas_pagamentos (cod_restaurante, cod_forma_pagamento) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
 

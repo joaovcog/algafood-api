@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controller;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import com.algaworks.algafood.api.assembler.impl.FormaPagamentoDtoAssembler;
 import com.algaworks.algafood.api.dto.input.FormaPagamentoInputDto;
@@ -36,7 +39,15 @@ public class FormaPagamentoController {
 	private FormaPagamentoDtoAssembler formaPagamentoDtoAssembler;
 	
 	@GetMapping
-	public ResponseEntity<List<FormaPagamentoOutputDto>> listar() {
+	public ResponseEntity<List<FormaPagamentoOutputDto>> listar(ServletWebRequest request) {
+		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+		
+		String eTag = gerarEtagListagem();
+		
+		if (request.checkNotModified(eTag)) {
+			return null;
+		}
+		
 		List<FormaPagamento> formasPagamentos = formaPagamentoService.listar();
 		
 		List<FormaPagamentoOutputDto> formasPagamentosOutputDto = formaPagamentoDtoAssembler.toCollectionOutputDtoFromDomainEntity(formasPagamentos);
@@ -44,11 +55,20 @@ public class FormaPagamentoController {
 		return ResponseEntity
 				.ok()
 				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+				.eTag(eTag)
 				.body(formasPagamentosOutputDto);
 	}
 	
 	@GetMapping("/{codFormaPagamento}")
-	public ResponseEntity<FormaPagamentoOutputDto> buscar(@PathVariable Long codFormaPagamento) {
+	public ResponseEntity<FormaPagamentoOutputDto> buscar(@PathVariable Long codFormaPagamento, ServletWebRequest request) {
+		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+		
+		String eTag = gerarEtagPorCodFormaPagamento(codFormaPagamento);
+		
+		if (request.checkNotModified(eTag)) {
+			return null;
+		}
+		
 		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(codFormaPagamento);
 		
 		FormaPagamentoOutputDto formaPagamentoOutputDto = formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamento);
@@ -56,6 +76,7 @@ public class FormaPagamentoController {
 		return ResponseEntity
 				.ok()
 				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+				.eTag(eTag)
 				.body(formaPagamentoOutputDto);
 	}
 	
@@ -84,4 +105,27 @@ public class FormaPagamentoController {
 	public void remover(@PathVariable Long codFormaPagamento) {
 		formaPagamentoService.excluir(codFormaPagamento);
 	}
+	
+	private String gerarEtagListagem() {
+		return gerarEtagPorCodFormaPagamento(null);
+	}
+	
+	private String gerarEtagPorCodFormaPagamento(Long codFormaPagamento) {
+		String eTag = "0";
+		
+		OffsetDateTime dataUltimaAtualizacao = null;
+		
+		if (codFormaPagamento != null) {
+			dataUltimaAtualizacao = formaPagamentoService.getDataAtualizacao(codFormaPagamento);
+		} else {	
+			dataUltimaAtualizacao = formaPagamentoService.getDataUltimaAtualizacao();
+		}
+		
+		if (dataUltimaAtualizacao != null) {
+			eTag = String.valueOf(dataUltimaAtualizacao.toEpochSecond());
+		}
+		
+		return eTag;
+	}
+	
 }
