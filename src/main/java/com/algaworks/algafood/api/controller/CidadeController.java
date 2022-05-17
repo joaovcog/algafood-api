@@ -30,6 +30,8 @@ import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CidadeService;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @Api(tags = "Cidades")
 @RestController
@@ -45,6 +47,7 @@ public class CidadeController {
 	@Autowired
 	private CidadeDtoAssembler cidadeDtoAssembler;
 	
+	@ApiOperation("Lista as cidades")
 	@GetMapping
 	public Page<CidadeOutputDto> listar(@PageableDefault(size = 5) Pageable pageable) {
 		Page<Cidade> cidadesPage = cidadeRepository.findAllPaginado(pageable);
@@ -57,13 +60,15 @@ public class CidadeController {
 		return cidadesOutputDtoPage;
 	}
 
+	@ApiOperation("Busca uma cidade por código")
 	@GetMapping("/{codCidade}")
-	public CidadeOutputDto buscar(@PathVariable Long codCidade) {
+	public CidadeOutputDto buscar(@ApiParam(value = "Código de uma cidade") @PathVariable Long codCidade) {
 		Cidade cidade = cidadeService.buscarOuFalhar(codCidade);
 		
 		return cidadeDtoAssembler.toOutputDtoFromDomainEntity(cidade);
 	}
 
+	@ApiOperation("Cadastra uma cidade")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeOutputDto adicionar(@RequestBody @Valid CidadeInputDto cidadeInput) {
@@ -76,6 +81,7 @@ public class CidadeController {
 		}
 	}
 
+	@ApiOperation("Atualiza uma cidade por código")
 	@PutMapping("/{codCidade}")
 	public CidadeOutputDto atualizar(@PathVariable Long codCidade, @RequestBody @Valid CidadeInputDto cidadeInput) {
 		Cidade cidadeAtual = cidadeService.buscarOuFalhar(codCidade);
@@ -89,9 +95,10 @@ public class CidadeController {
 		}
 	}
 
+	@ApiOperation("Exclui uma cidade por código")
 	@DeleteMapping("/{codCidade}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long codCidade) {
+	public void remover(@ApiParam(value = "Código de uma cidade") @PathVariable Long codCidade) {
 		cidadeService.excluir(codCidade);
 	}
 	

@@ -24,7 +24,7 @@ public class SpringFoxConfig {
 					//.paths(PathSelectors.ant("/restaurantes/*"))
 					.build()
 				.apiInfo(apiInfo())
-				.tags(new Tag("Cidades", "Gerencia as cidades"));
+				.tags(tags()[0], tags());
 	}
 	
 	public ApiInfo apiInfo() {
@@ -34,6 +34,13 @@ public class SpringFoxConfig {
 				.version("1")
 				.contact(new Contact("AlgaWorks", "https://www.algaworks.com", "contato@algaworks.com"))
 				.build();
+	}
+	
+	private Tag[] tags() {
+		return new Tag[] {
+				new Tag("Cidades", "Gerencia as cidades"), 
+				new Tag("Cozinhas", "Gerencia as cozinhas")
+		};
 	}
 	
 }
