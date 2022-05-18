@@ -21,27 +21,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.impl.CidadeDtoAssembler;
+import com.algaworks.algafood.api.controller.openapi.CidadeControllerOpenApi;
 import com.algaworks.algafood.api.dto.input.CidadeInputDto;
 import com.algaworks.algafood.api.dto.output.CidadeOutputDto;
-import com.algaworks.algafood.api.exceptionhandler.ApiError;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CidadeService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-
-@Api(tags = "Cidades")
 @RestController
 @RequestMapping("/cidades")
-public class CidadeController {
+public class CidadeController implements CidadeControllerOpenApi {
 
 	@Autowired
 	private CidadeRepository cidadeRepository;
@@ -52,7 +43,6 @@ public class CidadeController {
 	@Autowired
 	private CidadeDtoAssembler cidadeDtoAssembler;
 	
-	@ApiOperation("Lista as cidades")
 	@GetMapping
 	public Page<CidadeOutputDto> listar(@PageableDefault(size = 5) Pageable pageable) {
 		Page<Cidade> cidadesPage = cidadeRepository.findAllPaginado(pageable);
@@ -65,22 +55,13 @@ public class CidadeController {
 		return cidadesOutputDtoPage;
 	}
 
-	@ApiOperation("Busca uma cidade por código")
-	@ApiResponses({
-		@ApiResponse(responseCode = "400", description = "Código da cidade inválido", content = @Content(schema = @Schema(implementation = ApiError.class))), 
-		@ApiResponse(responseCode = "404", description = "Cidade não encontrada", content = @Content(schema = @Schema(implementation = ApiError.class)))
-	})
 	@GetMapping("/{codCidade}")
-	public CidadeOutputDto buscar(@ApiParam(value = "Código de uma cidade") @PathVariable Long codCidade) {
+	public CidadeOutputDto buscar(@PathVariable Long codCidade) {
 		Cidade cidade = cidadeService.buscarOuFalhar(codCidade);
 		
 		return cidadeDtoAssembler.toOutputDtoFromDomainEntity(cidade);
 	}
 
-	@ApiOperation("Cadastra uma cidade")
-	@ApiResponses({
-		@ApiResponse(responseCode = "201", description = "Cidade cadastrada") 
-	})
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeOutputDto adicionar(@RequestBody @Valid CidadeInputDto cidadeInput) {
@@ -93,11 +74,6 @@ public class CidadeController {
 		}
 	}
 
-	@ApiOperation("Atualiza uma cidade por código")
-	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "Cidade atualizada"), 
-		@ApiResponse(responseCode = "404", description = "Cidade não encontrada", content = @Content(schema = @Schema(implementation = ApiError.class)))
-	})
 	@PutMapping("/{codCidade}")
 	public CidadeOutputDto atualizar(@PathVariable Long codCidade, @RequestBody @Valid CidadeInputDto cidadeInput) {
 		Cidade cidadeAtual = cidadeService.buscarOuFalhar(codCidade);
@@ -111,14 +87,9 @@ public class CidadeController {
 		}
 	}
 
-	@ApiOperation("Exclui uma cidade por código")
-	@ApiResponses({
-		@ApiResponse(responseCode = "204", description = "Cidade excluída"), 
-		@ApiResponse(responseCode = "404", description = "Cidade não encontrada", content = @Content(schema = @Schema(implementation = ApiError.class)))
-	})
 	@DeleteMapping("/{codCidade}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@ApiParam(value = "Código de uma cidade") @PathVariable Long codCidade) {
+	public void remover(@PathVariable Long codCidade) {
 		cidadeService.excluir(codCidade);
 	}
 	
