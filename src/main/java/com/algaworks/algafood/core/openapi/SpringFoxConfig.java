@@ -113,7 +113,8 @@ public class SpringFoxConfig {
 	private Tag[] tags() {
 		return new Tag[] { 
 				new Tag("Cidades", "Gerencia as cidades"), 
-				new Tag("Cozinhas", "Gerencia as cozinhas") 
+				new Tag("Cozinhas", "Gerencia as cozinhas"),
+				new Tag("Grupos", "Gerencia os grupos")
 			};
 	}
 
