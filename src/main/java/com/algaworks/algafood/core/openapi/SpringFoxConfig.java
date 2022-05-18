@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.context.request.ServletWebRequest;
 
 import com.algaworks.algafood.api.dto.output.CidadeOutputDto;
 import com.algaworks.algafood.api.exceptionhandler.ApiError;
@@ -51,6 +52,7 @@ public class SpringFoxConfig {
 				.globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
 				.globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
 				.additionalModels(typeResolver.resolve(ApiError.class))
+				.ignoredParameterTypes(ServletWebRequest.class)
 				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
 				.alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, CidadeOutputDto.class), CidadesModelOpenApi.class))
 				.apiInfo(apiInfo())
@@ -122,7 +124,7 @@ public class SpringFoxConfig {
 		return new Tag[] { 
 				new Tag("Cidades", "Gerencia as cidades"), 
 				new Tag("Cozinhas", "Gerencia as cozinhas"),
-				new Tag("Grupos", "Gerencia os grupos")
+				new Tag("Grupos", "Gerencia os grupos de usuários")
 			};
 	}
 
