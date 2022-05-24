@@ -1,10 +1,14 @@
 package com.algaworks.algafood.api.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,10 +38,24 @@ public class UsuarioController {
 	private UsuarioDtoAssembler usuarioDtoAssembler;
 	
 	@GetMapping
-	public List<UsuarioOutputDto> listar() {
+	public CollectionModel<UsuarioOutputDto> listar() {
 		List<Usuario> usuarios = usuarioService.listar();
 		
-		return usuarioDtoAssembler.toCollectionOutputDtoFromDomainEntity(usuarios);
+		List<UsuarioOutputDto> usuariosOutputDto = usuarioDtoAssembler.toCollectionOutputDtoFromDomainEntity(usuarios);
+		
+		usuariosOutputDto.forEach(usuarioOutput -> {
+			usuarioOutput.add(linkTo(methodOn(UsuarioController.class)
+					.buscar(usuarioOutput.getCodigo())).withSelfRel());
+			
+			usuarioOutput.add(linkTo(methodOn(UsuarioController.class).listar())
+					.withRel("usuarios"));
+		});
+		
+		CollectionModel<UsuarioOutputDto> usuariosCollectionModel = CollectionModel.of(usuariosOutputDto);
+		
+		usuariosCollectionModel.add(linkTo(UsuarioController.class).withSelfRel());
+		
+		return usuariosCollectionModel;
 	}
 	
 	@GetMapping("/{codUsuario}")

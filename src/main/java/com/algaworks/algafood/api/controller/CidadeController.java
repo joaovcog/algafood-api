@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
 
@@ -65,16 +66,27 @@ public class CidadeController implements CidadeControllerOpenApi {
 		
 		CidadeOutputDto cidadeOutputDto = cidadeDtoAssembler.toOutputDtoFromDomainEntity(cidade);
 		
-		cidadeOutputDto.add(linkTo(CidadeController.class)
-					.slash(cidadeOutputDto.getCodigo())
-					.withSelfRel());
+		cidadeOutputDto.add(linkTo(methodOn(CidadeController.class)
+				.buscar(cidadeOutputDto.getCodigo())).withSelfRel());
+		
+//		cidadeOutputDto.add(linkTo(CidadeController.class)
+//				.slash(cidadeOutputDto.getCodigo())
+//				.withSelfRel());
+		
+		//TODO Incluir link por método com paginação
+//		cidadeOutputDto.add(linkTo(methodOn(CidadeController.class)
+//				.listar()).withRel("cidades"));
 		
 		cidadeOutputDto.add(linkTo(CidadeController.class)
 				.withRel("cidades"));
 		
-		cidadeOutputDto.getEstado().add(linkTo(EstadoController.class)
-				.slash(cidadeOutputDto.getEstado().getCodigo())
-				.withSelfRel());
+		
+		cidadeOutputDto.add(linkTo(methodOn(EstadoController.class)
+				.buscar(cidadeOutputDto.getEstado().getCodigo())).withSelfRel());
+		
+//		cidadeOutputDto.getEstado().add(linkTo(EstadoController.class)
+//				.slash(cidadeOutputDto.getEstado().getCodigo())
+//				.withSelfRel());
 		
 		return cidadeOutputDto;
 	}
