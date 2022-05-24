@@ -15,7 +15,7 @@ import lombok.experimental.UtilityClass;
 public class ResourceUriHelper {
 
 	public static void addUriToResponseHeader(Object resourceCode) {
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{codigo}")
 				.buildAndExpand(resourceCode).toUri();
 
 		HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())

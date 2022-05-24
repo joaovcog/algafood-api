@@ -1,5 +1,7 @@
 package com.algaworks.algafood.api.dto.output;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +9,7 @@ import lombok.Setter;
 //@ApiModel(value = "Cidade", description = "Representa uma cidade")
 @Getter
 @Setter
-public class CidadeOutputDto {
+public class CidadeOutputDto extends RepresentationModel<CidadeOutputDto> {
 	
 	//@ApiModelProperty(value = "Código da cidade", example = "1")
 	@ApiModelProperty(example = "1")
