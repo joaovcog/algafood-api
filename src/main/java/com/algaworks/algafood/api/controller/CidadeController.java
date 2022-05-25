@@ -1,8 +1,5 @@
 package com.algaworks.algafood.api.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import java.util.List;
 
 import javax.validation.Valid;
@@ -26,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.ResourceUriHelper;
 import com.algaworks.algafood.api.assembler.impl.CidadeDtoAssembler;
+import com.algaworks.algafood.api.assembler.impl.CidadeDtoRepresentationAssembler;
 import com.algaworks.algafood.api.dto.input.CidadeInputDto;
 import com.algaworks.algafood.api.dto.output.CidadeOutputDto;
 import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;
@@ -48,6 +46,9 @@ public class CidadeController implements CidadeControllerOpenApi {
 	@Autowired
 	private CidadeDtoAssembler cidadeDtoAssembler;
 	
+	@Autowired
+	private CidadeDtoRepresentationAssembler cidadeDtoRepresentationAssembler;
+	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<CidadeOutputDto> listar(@PageableDefault(size = 5) Pageable pageable) {
 		Page<Cidade> cidadesPage = cidadeRepository.findAllPaginado(pageable);
@@ -64,29 +65,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 	public CidadeOutputDto buscar(@PathVariable Long codCidade) {
 		Cidade cidade = cidadeService.buscarOuFalhar(codCidade);
 		
-		CidadeOutputDto cidadeOutputDto = cidadeDtoAssembler.toOutputDtoFromDomainEntity(cidade);
-		
-		cidadeOutputDto.add(linkTo(methodOn(CidadeController.class)
-				.buscar(cidadeOutputDto.getCodigo())).withSelfRel());
-		
-//		cidadeOutputDto.add(linkTo(CidadeController.class)
-//				.slash(cidadeOutputDto.getCodigo())
-//				.withSelfRel());
-		
-		//TODO Incluir link por método com paginação
-//		cidadeOutputDto.add(linkTo(methodOn(CidadeController.class)
-//				.listar()).withRel("cidades"));
-		
-		cidadeOutputDto.add(linkTo(CidadeController.class)
-				.withRel("cidades"));
-		
-		
-		cidadeOutputDto.add(linkTo(methodOn(EstadoController.class)
-				.buscar(cidadeOutputDto.getEstado().getCodigo())).withSelfRel());
-		
-//		cidadeOutputDto.getEstado().add(linkTo(EstadoController.class)
-//				.slash(cidadeOutputDto.getEstado().getCodigo())
-//				.withSelfRel());
+		CidadeOutputDto cidadeOutputDto = cidadeDtoRepresentationAssembler.toModel(cidade);
 		
 		return cidadeOutputDto;
 	}
@@ -95,9 +74,9 @@ public class CidadeController implements CidadeControllerOpenApi {
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeOutputDto adicionar(@RequestBody @Valid CidadeInputDto cidadeInput) {
 		try {
-			Cidade cidade = cidadeDtoAssembler.toDomainObjectFromInputDto(cidadeInput);
+			Cidade cidade = cidadeDtoRepresentationAssembler.toDomainObjectFromInputDto(cidadeInput);
 			
-			CidadeOutputDto cidadeOutputDto = cidadeDtoAssembler.toOutputDtoFromDomainEntity(cidadeService.salvar(cidade));
+			CidadeOutputDto cidadeOutputDto = cidadeDtoRepresentationAssembler.toModel(cidadeService.salvar(cidade));
 			
 			ResourceUriHelper.addUriToResponseHeader(cidadeOutputDto.getCodigo());
 			
@@ -111,10 +90,10 @@ public class CidadeController implements CidadeControllerOpenApi {
 	public CidadeOutputDto atualizar(@PathVariable Long codCidade, @RequestBody @Valid CidadeInputDto cidadeInput) {
 		Cidade cidadeAtual = cidadeService.buscarOuFalhar(codCidade);
 		
-		cidadeDtoAssembler.copyFromInputDtoToDomainObject(cidadeInput, cidadeAtual);
+		cidadeDtoRepresentationAssembler.copyFromInputDtoToDomainObject(cidadeInput, cidadeAtual);
 
 		try {
-			return cidadeDtoAssembler.toOutputDtoFromDomainEntity(cidadeService.salvar(cidadeAtual));
+			return cidadeDtoRepresentationAssembler.toModel(cidadeService.salvar(cidadeAtual));
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
