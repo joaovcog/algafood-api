@@ -1,8 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.api.assembler.impl.UsuarioDtoAssembler;
+import com.algaworks.algafood.api.assembler.impl.UsuarioDtoRepresentationAssembler;
 import com.algaworks.algafood.api.dto.output.UsuarioOutputDto;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
@@ -25,13 +24,13 @@ public class RestauranteUsuarioResponsavelController {
 	private RestauranteService restauranteService;
 	
 	@Autowired
-	private UsuarioDtoAssembler usuarioDtoAssembler;
+	private UsuarioDtoRepresentationAssembler usuarioDtoRepresentationAssembler;
 	
 	@GetMapping
-	public List<UsuarioOutputDto> listar(@PathVariable Long codRestaurante) {
+	public CollectionModel<UsuarioOutputDto> listar(@PathVariable Long codRestaurante) {
 		Restaurante restaurante = restauranteService.buscarOuFalhar(codRestaurante);
 		
-		return usuarioDtoAssembler.toCollectionOutputDtoFromDomainEntity(restaurante.getUsuariosResponsaveis());
+		return usuarioDtoRepresentationAssembler.toCollectionModel(restaurante.getUsuariosResponsaveis());
 	}
 	
 	@PutMapping("/{codUsuario}")

@@ -1,8 +1,5 @@
 package com.algaworks.algafood.api.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import java.util.List;
 
 import javax.validation.Valid;
@@ -19,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.api.assembler.impl.UsuarioDtoAssembler;
+import com.algaworks.algafood.api.assembler.impl.UsuarioDtoRepresentationAssembler;
 import com.algaworks.algafood.api.dto.input.UsuarioAtualizacaoInputDto;
 import com.algaworks.algafood.api.dto.input.UsuarioAtualizacaoSenhaInputDto;
 import com.algaworks.algafood.api.dto.input.UsuarioCadastroInputDto;
@@ -35,54 +32,40 @@ public class UsuarioController {
 	private UsuarioService usuarioService;
 	
 	@Autowired
-	private UsuarioDtoAssembler usuarioDtoAssembler;
+	private UsuarioDtoRepresentationAssembler usuarioDtoRepresentationAssembler;
 	
 	@GetMapping
 	public CollectionModel<UsuarioOutputDto> listar() {
 		List<Usuario> usuarios = usuarioService.listar();
 		
-		List<UsuarioOutputDto> usuariosOutputDto = usuarioDtoAssembler.toCollectionOutputDtoFromDomainEntity(usuarios);
-		
-		usuariosOutputDto.forEach(usuarioOutput -> {
-			usuarioOutput.add(linkTo(methodOn(UsuarioController.class)
-					.buscar(usuarioOutput.getCodigo())).withSelfRel());
-			
-			usuarioOutput.add(linkTo(methodOn(UsuarioController.class).listar())
-					.withRel("usuarios"));
-		});
-		
-		CollectionModel<UsuarioOutputDto> usuariosCollectionModel = CollectionModel.of(usuariosOutputDto);
-		
-		usuariosCollectionModel.add(linkTo(UsuarioController.class).withSelfRel());
-		
-		return usuariosCollectionModel;
+		return usuarioDtoRepresentationAssembler.toCollectionModel(usuarios);
 	}
 	
 	@GetMapping("/{codUsuario}")
 	public UsuarioOutputDto buscar(@PathVariable Long codUsuario) {
 		Usuario usuario = usuarioService.buscarOuFalhar(codUsuario);
 		
-		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuario);
+		return usuarioDtoRepresentationAssembler.toModel(usuario);
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public UsuarioOutputDto adicionar(@RequestBody @Valid UsuarioCadastroInputDto usuarioInput) {
-		Usuario usuario = usuarioDtoAssembler.toDomainObjectFromInputDto(usuarioInput);
+		Usuario usuario = usuarioDtoRepresentationAssembler.toDomainObjectFromInputDto(usuarioInput);
 		usuario = usuarioService.salvar(usuario);
 		
-		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuario);
+		return usuarioDtoRepresentationAssembler.toModel(usuario);
 	}
 	
 	@PutMapping("/{codUsuario}")
 	public UsuarioOutputDto atualizar(@PathVariable Long codUsuario, @RequestBody @Valid UsuarioAtualizacaoInputDto usuarioInput) {
 		Usuario usuarioAtual = usuarioService.buscarOuFalhar(codUsuario);
 		
-		usuarioDtoAssembler.copyFromInputDtoToDomainObject(usuarioInput, usuarioAtual);
+		usuarioDtoRepresentationAssembler.copyFromInputDtoToDomainObject(usuarioInput, usuarioAtual);
 		
 		usuarioAtual = usuarioService.salvar(usuarioAtual);
 		
-		return usuarioDtoAssembler.toOutputDtoFromDomainEntity(usuarioAtual);
+		return usuarioDtoRepresentationAssembler.toModel(usuarioAtual);
 	}
 	
 	@PutMapping("/{codUsuario}/senha")
