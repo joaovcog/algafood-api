@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.api.assembler.impl.EstadoDtoAssembler;
+import com.algaworks.algafood.api.assembler.impl.EstadoDtoRepresentationAssembler;
 import com.algaworks.algafood.api.dto.input.EstadoInputDto;
 import com.algaworks.algafood.api.dto.output.EstadoOutputDto;
 import com.algaworks.algafood.domain.model.Estado;
@@ -34,35 +35,40 @@ public class EstadoController {
 	private EstadoService estadoService;
 	
 	@Autowired
-	private EstadoDtoAssembler estadoDtoAssembler;
+	private EstadoDtoRepresentationAssembler estadoDtoRepresentationAssembler;
 	
 	@GetMapping
-	public List<EstadoOutputDto> listar() {
-		return estadoDtoAssembler.toCollectionOutputDtoFromDomainEntity(estadoRepository.findAll());
+	public CollectionModel<EstadoOutputDto> listar() {
+		List<Estado> estados = estadoRepository.findAll();
+		
+		return estadoDtoRepresentationAssembler.toCollectionModel(estados);
 	}
 
 	@GetMapping("/{codEstado}")
 	public EstadoOutputDto buscar(@PathVariable Long codEstado) {
 		Estado estado = estadoService.buscarOuFalhar(codEstado);
 		
-		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estado);
+		return estadoDtoRepresentationAssembler.toModel(estado);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public EstadoOutputDto adicionar(@RequestBody @Valid EstadoInputDto estadoInput) {
-		Estado estado = estadoDtoAssembler.toDomainObjectFromInputDto(estadoInput);
+		Estado estado = estadoDtoRepresentationAssembler.toDomainObjectFromInputDto(estadoInput);
+		estado = estadoService.salvar(estado);
 		
-		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estadoService.salvar(estado));
+		return estadoDtoRepresentationAssembler.toModel(estado);
 	}
 
 	@PutMapping("/{codEstado}")
 	public EstadoOutputDto atualizar(@PathVariable Long codEstado, @RequestBody @Valid EstadoInputDto estadoInput) {
 		Estado estadoAtual = estadoService.buscarOuFalhar(codEstado);
 		
-		estadoDtoAssembler.copyFromInputDtoToDomainObject(estadoInput, estadoAtual);
+		estadoDtoRepresentationAssembler.copyFromInputDtoToDomainObject(estadoInput, estadoAtual);
+		
+		estadoAtual = estadoService.salvar(estadoAtual);
 
-		return estadoDtoAssembler.toOutputDtoFromDomainEntity(estadoService.salvar(estadoAtual));
+		return estadoDtoRepresentationAssembler.toModel(estadoAtual);
 	}
 
 	@DeleteMapping("/{codEstado}")
