@@ -1,44 +1,35 @@
 package com.algaworks.algafood.api.assembler.impl.representation;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.assembler.generic.GenericOutputRepresentationAssembler;
 import com.algaworks.algafood.api.controller.PedidoController;
-import com.algaworks.algafood.api.controller.RestauranteController;
-import com.algaworks.algafood.api.controller.UsuarioController;
 import com.algaworks.algafood.api.dto.output.PedidoResumoOutputDto;
 import com.algaworks.algafood.domain.model.Pedido;
 
 @Component
 public class PedidoResumoDtoRepresentationAssembler extends GenericOutputRepresentationAssembler<Pedido, PedidoResumoOutputDto, PedidoController> {
 	
-	private final Class<PedidoController> controllerClass;
+	@Autowired
+	private AlgaLinks algaLinks;
 	
 	public PedidoResumoDtoRepresentationAssembler() {
 		super(PedidoController.class, PedidoResumoOutputDto.class);
-		
-		this.controllerClass = PedidoController.class;
 	}
 
 	@Override
 	public PedidoResumoOutputDto toModel(Pedido entity) {
 		PedidoResumoOutputDto pedidoResumoOutputDto = toOutputDtoFromDomainEntity(entity);
 		
-		pedidoResumoOutputDto.add(linkTo(methodOn(controllerClass)
-				.buscar(pedidoResumoOutputDto.getIdentificador()))
-				.withSelfRel());
+		pedidoResumoOutputDto.add(algaLinks.linkToPedidos(pedidoResumoOutputDto.getIdentificador()));
 		
-		pedidoResumoOutputDto.add(linkTo(controllerClass)
-				.withRel("pedidos"));
+		pedidoResumoOutputDto.add(algaLinks.linkToPedidos());
 		
-		pedidoResumoOutputDto.getRestaurante().add(linkTo(methodOn(RestauranteController.class)
-                .buscar(entity.getRestaurante().getCodigo())).withSelfRel());
+		pedidoResumoOutputDto.getRestaurante().add(algaLinks.linkToRestaurante(entity.getRestaurante().getCodigo()));
         
-		pedidoResumoOutputDto.getUsuarioCliente().add(linkTo(methodOn(UsuarioController.class)
-                .buscar(entity.getUsuarioCliente().getCodigo())).withSelfRel());
+		pedidoResumoOutputDto.getUsuarioCliente().add(algaLinks.linkToUsuarioCliente(entity.getUsuarioCliente().getCodigo()));
 		
 		return pedidoResumoOutputDto;
 	}

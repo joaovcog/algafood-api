@@ -1,11 +1,10 @@
 package com.algaworks.algafood.api.assembler.impl.representation;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.assembler.generic.GenericInputOutputRepresentationAssembler;
 import com.algaworks.algafood.api.controller.EstadoController;
 import com.algaworks.algafood.api.dto.input.EstadoInputDto;
@@ -18,6 +17,9 @@ public class EstadoDtoRepresentationAssembler extends GenericInputOutputRepresen
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@Autowired
+	private AlgaLinks algaLinks;
+	
 	public EstadoDtoRepresentationAssembler() {
 		super(EstadoController.class, EstadoOutputDto.class);
 	}
@@ -27,11 +29,7 @@ public class EstadoDtoRepresentationAssembler extends GenericInputOutputRepresen
 		EstadoOutputDto estadoOutputDto = createModelWithId(entity.getCodigo(), entity);
 		modelMapper.map(entity, estadoOutputDto);
 		
-//		estadoOutputDto.add(linkTo(methodOn(getControllerClass())
-//				.buscar(estadoOutputDto.getCodigo())).withSelfRel());
-		
-		estadoOutputDto.add(linkTo(getControllerClass())
-				.withRel("estados"));
+		estadoOutputDto.add(algaLinks.linkToEstados("estados"));
 		
 		return estadoOutputDto;
 	}

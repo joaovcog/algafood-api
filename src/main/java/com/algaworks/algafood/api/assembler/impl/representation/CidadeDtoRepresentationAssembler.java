@@ -1,13 +1,11 @@
 package com.algaworks.algafood.api.assembler.impl.representation;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.assembler.generic.GenericInputOutputRepresentationAssembler;
 import com.algaworks.algafood.api.controller.CidadeController;
-import com.algaworks.algafood.api.controller.EstadoController;
 import com.algaworks.algafood.api.dto.input.CidadeInputDto;
 import com.algaworks.algafood.api.dto.output.CidadeOutputDto;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -15,6 +13,9 @@ import com.algaworks.algafood.domain.model.Estado;
 
 @Component
 public class CidadeDtoRepresentationAssembler extends GenericInputOutputRepresentationAssembler<Cidade, CidadeInputDto, CidadeOutputDto, CidadeController> {
+	
+	@Autowired
+	private AlgaLinks algaLinks;
 	
 	public CidadeDtoRepresentationAssembler() {
 		super(CidadeController.class, CidadeOutputDto.class);
@@ -31,14 +32,11 @@ public class CidadeDtoRepresentationAssembler extends GenericInputOutputRepresen
 	public CidadeOutputDto toModel(Cidade entity) {
 		CidadeOutputDto cidadeOutputDto = toOutputDtoFromDomainEntity(entity);
 		
-		cidadeOutputDto.add(linkTo(methodOn(CidadeController.class)
-				.buscar(cidadeOutputDto.getCodigo())).withSelfRel());
+		cidadeOutputDto.add(algaLinks.linkToCidade(cidadeOutputDto.getCodigo()));
 		
-		cidadeOutputDto.add(linkTo(CidadeController.class)
-				.withRel("cidades"));
+		cidadeOutputDto.add(algaLinks.linkToCidades("cidades"));
 		
-		cidadeOutputDto.getEstado().add(linkTo(methodOn(EstadoController.class)
-				.buscar(cidadeOutputDto.getEstado().getCodigo())).withSelfRel());
+		cidadeOutputDto.getEstado().add(algaLinks.linkToEstado(cidadeOutputDto.getEstado().getCodigo()));
 		
 		return cidadeOutputDto;
 	}
