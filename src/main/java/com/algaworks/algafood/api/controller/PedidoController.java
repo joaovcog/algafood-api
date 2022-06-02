@@ -25,6 +25,7 @@ import com.algaworks.algafood.api.assembler.impl.representation.PedidoResumoDtoR
 import com.algaworks.algafood.api.dto.input.PedidoInputDto;
 import com.algaworks.algafood.api.dto.output.PedidoOutputDto;
 import com.algaworks.algafood.api.dto.output.PedidoResumoOutputDto;
+import com.algaworks.algafood.core.data.PageWrapper;
 import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -51,9 +52,11 @@ public class PedidoController {
 
 	@GetMapping
 	public PagedModel<PedidoResumoOutputDto> pesquisar(PedidoFilter filtro, @PageableDefault(size = 5) Pageable pageable) {
-		pageable = traduzirPageable(pageable);
+		Pageable pageableTraduzido = traduzirPageable(pageable);
 		
-		Page<Pedido> pedidosPage = pedidoService.listar(filtro, pageable);
+		Page<Pedido> pedidosPage = pedidoService.listar(filtro, pageableTraduzido);
+		
+		pedidosPage = new PageWrapper<>(pedidosPage, pageable);
 
 		PagedModel<PedidoResumoOutputDto> pedidosPagedModel = pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoDtoRepresentationAssembler);
 		
@@ -106,7 +109,7 @@ public class PedidoController {
 	private Pageable traduzirPageable(Pageable pageable) {
 		var mapeamento = Map.of(
 				"codigo", "codigo",
-				"restaurante.nome", "restaurante.nome",
+				"nomeRest", "restaurante.nome",
 				"usuarioCliente.nome", "usuarioCliente.nome",
 				"valorTotal", "valorTotal");
 		
