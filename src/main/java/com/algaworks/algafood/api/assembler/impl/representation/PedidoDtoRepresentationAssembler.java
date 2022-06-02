@@ -1,8 +1,5 @@
 package com.algaworks.algafood.api.assembler.impl.representation;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,24 +13,30 @@ import com.algaworks.algafood.domain.model.Pedido;
 @Component
 public class PedidoDtoRepresentationAssembler extends GenericInputOutputRepresentationAssembler<Pedido, PedidoInputDto, PedidoOutputDto, PedidoController> {
 	
-	private final Class<PedidoController> controllerClass;
-	
 	@Autowired
 	private AlgaLinks algaLinks;
 	
 	public PedidoDtoRepresentationAssembler() {
 		super(PedidoController.class, PedidoOutputDto.class);
-		
-		this.controllerClass = PedidoController.class;
 	}
 
 	@Override
 	public PedidoOutputDto toModel(Pedido entity) {
 		PedidoOutputDto pedidoOutputDto = toOutputDtoFromDomainEntity(entity);
 		
-		pedidoOutputDto.add(linkTo(methodOn(controllerClass)
-				.buscar(pedidoOutputDto.getIdentificador()))
-				.withSelfRel());
+		if (entity.podeSerConfirmado()) {
+			pedidoOutputDto.add(algaLinks.linkToConfirmacaoPedido(entity.getIdentificador(), "confirmar"));
+		}
+		
+		if (entity.podeSerCancelado()) {
+			pedidoOutputDto.add(algaLinks.linkToCancelamentoPedido(entity.getIdentificador(), "cancelar"));
+		}
+		
+		if (entity.podeSerEntregue()) {
+			pedidoOutputDto.add(algaLinks.linkToEntregaPedido(entity.getIdentificador(), "entregar"));
+		}
+		
+		pedidoOutputDto.add(algaLinks.linkToPedidos(entity.getIdentificador()));
 		
 		pedidoOutputDto.add(algaLinks.linkToPedidos());
 		

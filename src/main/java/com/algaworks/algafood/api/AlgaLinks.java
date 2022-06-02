@@ -47,6 +47,24 @@ public class AlgaLinks {
 				.withSelfRel();
 	}
 	
+	public Link linkToConfirmacaoPedido(String identificador, String rel) {
+		return linkTo(methodOn(PedidoController.class)
+				.confirmar(identificador))
+				.withRel(rel);
+	}
+	
+	public Link linkToEntregaPedido(String identificador, String rel) {
+		return linkTo(methodOn(PedidoController.class)
+				.entregar(identificador))
+				.withRel(rel);
+	}
+	
+	public Link linkToCancelamentoPedido(String identificador, String rel) {
+		return linkTo(methodOn(PedidoController.class)
+				.cancelar(identificador))
+				.withRel(rel);
+	}
+	
 	public Link linkToRestaurante(Long codRestaurante) {
 		return linkTo(methodOn(RestauranteController.class)
                 .buscar(codRestaurante)).withSelfRel();

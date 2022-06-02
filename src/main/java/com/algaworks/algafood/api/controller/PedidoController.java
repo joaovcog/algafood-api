@@ -11,6 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -90,20 +91,26 @@ public class PedidoController {
 
 	@PutMapping("/{identificadorPedido}/confirmacao")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void confirmar(@PathVariable String identificadorPedido) {
+	public ResponseEntity<Void> confirmar(@PathVariable String identificadorPedido) {
 		pedidoService.confirmar(identificadorPedido);
+		
+		return ResponseEntity.noContent().build();
 	}
 
 	@PutMapping("/{identificadorPedido}/entrega")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void entregar(@PathVariable String identificadorPedido) {
+	public ResponseEntity<Void> entregar(@PathVariable String identificadorPedido) {
 		pedidoService.entregar(identificadorPedido);
+		
+		return ResponseEntity.noContent().build();
 	}
 
 	@PutMapping("/{identificadorPedido}/cancelamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void cancelar(@PathVariable String identificadorPedido) {
+	public ResponseEntity<Void> cancelar(@PathVariable String identificadorPedido) {
 		pedidoService.cancelar(identificadorPedido);
+		
+		return ResponseEntity.noContent().build();
 	}
 
 	private Pageable traduzirPageable(Pageable pageable) {
