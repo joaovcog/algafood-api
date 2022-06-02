@@ -3,6 +3,11 @@ package com.algaworks.algafood.api.assembler.impl.representation;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.TemplateVariable;
+import org.springframework.hateoas.TemplateVariables;
+import org.springframework.hateoas.UriTemplate;
+import org.springframework.hateoas.TemplateVariable.VariableType;
 import org.springframework.stereotype.Component;
 
 import com.algaworks.algafood.api.assembler.generic.GenericInputOutputRepresentationAssembler;
@@ -35,10 +40,18 @@ public class PedidoDtoRepresentationAssembler extends GenericInputOutputRepresen
 				.buscar(pedidoOutputDto.getIdentificador()))
 				.withSelfRel());
 		
-		pedidoOutputDto.add(linkTo(controllerClass)
-				.withRel("pedidos"));
+		TemplateVariables pageVariables = new TemplateVariables(
+				new TemplateVariable("page", VariableType.REQUEST_PARAM),
+				new TemplateVariable("size", VariableType.REQUEST_PARAM),
+				new TemplateVariable("sort", VariableType.REQUEST_PARAM)
+				);
 		
+		String pedidosUrl = linkTo(controllerClass).toUri().toString();
 		
+		pedidoOutputDto.add(Link.of(UriTemplate.of(pedidosUrl, pageVariables), "pedidos"));
+		
+//		pedidoOutputDto.add(linkTo(controllerClass)
+//				.withRel("pedidos"));
 		
 		pedidoOutputDto.getRestaurante().add(linkTo(methodOn(RestauranteController.class)
                 .buscar(entity.getRestaurante().getCodigo())).withSelfRel());
