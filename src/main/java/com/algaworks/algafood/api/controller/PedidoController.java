@@ -1,15 +1,15 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.api.assembler.impl.PedidoDtoAssembler;
-import com.algaworks.algafood.api.assembler.impl.PedidoResumoDtoAssembler;
+import com.algaworks.algafood.api.assembler.impl.representation.PedidoDtoRepresentationAssembler;
+import com.algaworks.algafood.api.assembler.impl.representation.PedidoResumoDtoRepresentationAssembler;
 import com.algaworks.algafood.api.dto.input.PedidoInputDto;
 import com.algaworks.algafood.api.dto.output.PedidoOutputDto;
 import com.algaworks.algafood.api.dto.output.PedidoResumoOutputDto;
@@ -41,37 +41,37 @@ public class PedidoController {
 	private PedidoService pedidoService;
 
 	@Autowired
-	private PedidoDtoAssembler pedidoDtoAssembler;
+	private PedidoDtoRepresentationAssembler pedidoDtoRepresentationAssembler;
 
 	@Autowired
-	private PedidoResumoDtoAssembler pedidoResumoDtoAssembler;
+	private PedidoResumoDtoRepresentationAssembler pedidoResumoDtoRepresentationAssembler;
+	
+	@Autowired
+	private PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
 
 	@GetMapping
-	public Page<PedidoResumoOutputDto> pesquisar(PedidoFilter filtro, @PageableDefault(size = 5) Pageable pageable) {
+	public PagedModel<PedidoResumoOutputDto> pesquisar(PedidoFilter filtro, @PageableDefault(size = 5) Pageable pageable) {
 		pageable = traduzirPageable(pageable);
 		
 		Page<Pedido> pedidosPage = pedidoService.listar(filtro, pageable);
 
-		List<PedidoResumoOutputDto> pedidosResumoOutputDto = pedidoResumoDtoAssembler
-				.toCollectionOutputDtoFromDomainEntity(pedidosPage.getContent());
+		PagedModel<PedidoResumoOutputDto> pedidosPagedModel = pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoDtoRepresentationAssembler);
 		
-		Page<PedidoResumoOutputDto> pedidosResumoOutputDtoPage = new PageImpl<>(pedidosResumoOutputDto, pageable, pedidosPage.getTotalElements());
-		
-		return pedidosResumoOutputDtoPage;
+		return pedidosPagedModel;
 	}
 
 	@GetMapping("/{identificadorPedido}")
 	public PedidoOutputDto buscar(@PathVariable String identificadorPedido) {
 		Pedido pedido = pedidoService.buscarOuFalhar(identificadorPedido);
 
-		return pedidoDtoAssembler.toOutputDtoFromDomainEntity(pedido);
+		return pedidoDtoRepresentationAssembler.toModel(pedido);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public PedidoOutputDto adicionar(@RequestBody @Valid PedidoInputDto pedidoInput) {
 		try {
-			Pedido novoPedido = pedidoDtoAssembler.toDomainObjectFromInputDto(pedidoInput);
+			Pedido novoPedido = pedidoDtoRepresentationAssembler.toDomainObjectFromInputDto(pedidoInput);
 
 			// TODO vincular usuário autenticado
 			novoPedido.setUsuarioCliente(new Usuario());
@@ -79,7 +79,7 @@ public class PedidoController {
 
 			novoPedido = pedidoService.emitir(novoPedido);
 
-			return pedidoDtoAssembler.toOutputDtoFromDomainEntity(novoPedido);
+			return pedidoDtoRepresentationAssembler.toModel(novoPedido);
 		} catch (EntidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}

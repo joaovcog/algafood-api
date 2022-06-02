@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.ResourceUriHelper;
-import com.algaworks.algafood.api.assembler.impl.CidadeDtoRepresentationAssembler;
+import com.algaworks.algafood.api.assembler.impl.representation.CidadeDtoRepresentationAssembler;
 import com.algaworks.algafood.api.dto.input.CidadeInputDto;
 import com.algaworks.algafood.api.dto.output.CidadeOutputDto;
 import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;

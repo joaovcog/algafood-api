@@ -54,7 +54,7 @@ public class RestauranteProdutoController {
 	}
 
 	@GetMapping("/{codProduto}")
-	private ProdutoOutputDto buscar(@PathVariable Long codRestaurante, @PathVariable Long codProduto) {
+	public ProdutoOutputDto buscar(@PathVariable Long codRestaurante, @PathVariable Long codProduto) {
 		Produto produto = produtoService.buscarOuFalhar(codRestaurante, codProduto);
 
 		return produtoDtoAssembler.toOutputDtoFromDomainEntity(produto);

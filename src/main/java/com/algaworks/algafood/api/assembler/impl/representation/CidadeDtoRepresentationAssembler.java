@@ -1,4 +1,4 @@
-package com.algaworks.algafood.api.assembler.impl;
+package com.algaworks.algafood.api.assembler.impl.representation;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;

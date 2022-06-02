@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.api.assembler.impl.UsuarioDtoRepresentationAssembler;
+import com.algaworks.algafood.api.assembler.impl.representation.UsuarioDtoRepresentationAssembler;
 import com.algaworks.algafood.api.dto.input.UsuarioAtualizacaoInputDto;
 import com.algaworks.algafood.api.dto.input.UsuarioAtualizacaoSenhaInputDto;
 import com.algaworks.algafood.api.dto.input.UsuarioCadastroInputDto;
