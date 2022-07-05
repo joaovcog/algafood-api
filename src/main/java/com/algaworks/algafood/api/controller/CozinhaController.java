@@ -9,7 +9,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.assembler.impl.CozinhaDtoRepresentationAssembler;
 import com.algaworks.algafood.api.dto.input.CozinhaInputDto;
 import com.algaworks.algafood.api.dto.output.CozinhaOutputDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CozinhaService;
@@ -46,7 +46,7 @@ public class CozinhaController {
 	@Autowired
 	private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 
-	@PreAuthorize("isAuthenticated()")
+	@CheckSecurity.Cozinhas.PodeConsultar
 	@GetMapping
 	public PagedModel<CozinhaOutputDto> listar(@PageableDefault(size = 2) Pageable pageable) {
 		Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
@@ -56,7 +56,7 @@ public class CozinhaController {
 		return cozinhasPagedModel;
 	}
 
-	@PreAuthorize("isAuthenticated()")
+	@CheckSecurity.Cozinhas.PodeConsultar
 	@GetMapping("/{codCozinha}")
 	public CozinhaOutputDto buscar(@PathVariable Long codCozinha) {
 		Cozinha cozinha = cozinhaService.buscarOuFalhar(codCozinha);
@@ -64,7 +64,7 @@ public class CozinhaController {
 		return cozinhaDtoRepresentationAssembler.toModel(cozinha);
 	}
 
-	@PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
+	@CheckSecurity.Cozinhas.PodeEditar
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CozinhaOutputDto adicionar(@RequestBody @Valid CozinhaInputDto cozinhaInput) { // o RequestBody vincula o corpo da requisição no parâmetro cozinhaInput
@@ -74,7 +74,7 @@ public class CozinhaController {
 		return cozinhaDtoRepresentationAssembler.toModel(cozinha);
 	}
 
-	@PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
+	@CheckSecurity.Cozinhas.PodeEditar
 	@PutMapping("/{codCozinha}")
 	public CozinhaOutputDto atualizar(@PathVariable Long codCozinha, @RequestBody @Valid CozinhaInputDto cozinhaInput) {
 		Cozinha cozinhaAtual = cozinhaService.buscarOuFalhar(codCozinha);
@@ -86,7 +86,7 @@ public class CozinhaController {
 		return cozinhaDtoRepresentationAssembler.toModel(cozinhaAtual);
 	}
 
-	@PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
+	@CheckSecurity.Cozinhas.PodeEditar
 	@DeleteMapping("/{codCozinha}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long codCozinha) {
