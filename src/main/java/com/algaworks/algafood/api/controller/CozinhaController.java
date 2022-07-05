@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,6 +46,7 @@ public class CozinhaController {
 	@Autowired
 	private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping
 	public PagedModel<CozinhaOutputDto> listar(@PageableDefault(size = 2) Pageable pageable) {
 		Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
@@ -54,6 +56,7 @@ public class CozinhaController {
 		return cozinhasPagedModel;
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/{codCozinha}")
 	public CozinhaOutputDto buscar(@PathVariable Long codCozinha) {
 		Cozinha cozinha = cozinhaService.buscarOuFalhar(codCozinha);
@@ -61,6 +64,7 @@ public class CozinhaController {
 		return cozinhaDtoRepresentationAssembler.toModel(cozinha);
 	}
 
+	@PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CozinhaOutputDto adicionar(@RequestBody @Valid CozinhaInputDto cozinhaInput) { // o RequestBody vincula o corpo da requisição no parâmetro cozinhaInput
@@ -70,6 +74,7 @@ public class CozinhaController {
 		return cozinhaDtoRepresentationAssembler.toModel(cozinha);
 	}
 
+	@PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
 	@PutMapping("/{codCozinha}")
 	public CozinhaOutputDto atualizar(@PathVariable Long codCozinha, @RequestBody @Valid CozinhaInputDto cozinhaInput) {
 		Cozinha cozinhaAtual = cozinhaService.buscarOuFalhar(codCozinha);
@@ -81,6 +86,7 @@ public class CozinhaController {
 		return cozinhaDtoRepresentationAssembler.toModel(cozinhaAtual);
 	}
 
+	@PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
 	@DeleteMapping("/{codCozinha}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long codCozinha) {
