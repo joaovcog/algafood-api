@@ -65,4 +65,8 @@ public class Usuario {
 		return !temGrupo(codGrupo);
 	}
 	
+	public boolean isNovo() {
+		return getCodigo() == null;
+	}
+	
 }

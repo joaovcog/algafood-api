@@ -77,9 +77,9 @@ insert into produtos (nome, descricao, preco, ativo, cod_restaurante) values ('T
 insert into produtos (nome, descricao, preco, ativo, cod_restaurante) values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e tomate', 8, 1, 5);
 
 
-insert into usuarios (nome, email, senha, data_cadastro) values ('João Victor', 'joaovictor.estudosweb+joao@gmail.com', '123', utc_timestamp);
-insert into usuarios (nome, email, senha, data_cadastro) values ('Maria', 'joaovictor.estudosweb+maria@gmail.com', '123', utc_timestamp);
-insert into usuarios (nome, email, senha, data_cadastro) values ('José', 'jose@email.com', '123', utc_timestamp);
+insert into usuarios (nome, email, senha, data_cadastro) values ('João Victor', 'joao@email.com', '$2a$12$OJcKEyHQilkeJskCo5ql0O.yWWOlZawppUrl87LWVEkw7GxMbj1au', utc_timestamp);
+insert into usuarios (nome, email, senha, data_cadastro) values ('Maria', 'maria@email.com', '$2a$12$OJcKEyHQilkeJskCo5ql0O.yWWOlZawppUrl87LWVEkw7GxMbj1au', utc_timestamp);
+insert into usuarios (nome, email, senha, data_cadastro) values ('José', 'jose@email.com', '$2a$12$OJcKEyHQilkeJskCo5ql0O.yWWOlZawppUrl87LWVEkw7GxMbj1au', utc_timestamp);
 
 insert into permissoes (nome, descricao) values ('CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
 insert into permissoes (nome, descricao) values ('EDITAR_COZINHAS', 'Permite editar cozinhas');
