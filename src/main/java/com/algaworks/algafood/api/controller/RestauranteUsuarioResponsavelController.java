@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.impl.UsuarioDtoRepresentationAssembler;
 import com.algaworks.algafood.api.dto.output.UsuarioOutputDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
 
@@ -29,6 +30,7 @@ public class RestauranteUsuarioResponsavelController {
 	@Autowired
 	private UsuarioDtoRepresentationAssembler usuarioDtoRepresentationAssembler;
 	
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping
 	public CollectionModel<UsuarioOutputDto> listar(@PathVariable Long codRestaurante) {
 		Restaurante restaurante = restauranteService.buscarOuFalhar(codRestaurante);
@@ -40,12 +42,14 @@ public class RestauranteUsuarioResponsavelController {
 						.withSelfRel());
 	}
 	
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping("/{codUsuario}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void vincularUsuariosResponsaveis(@PathVariable Long codRestaurante, @PathVariable Long codUsuario) {
 		restauranteService.vincularUsuarioResponsavel(codRestaurante, codUsuario);
 	}
 	
+	@CheckSecurity.Restaurantes.PodeEditar
 	@DeleteMapping("/{codUsuario}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void desvincularUsuariosResponsaveis(@PathVariable Long codRestaurante, @PathVariable Long codUsuario) {

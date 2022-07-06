@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.assembler.impl.ProdutoDtoAssembler;
 import com.algaworks.algafood.api.dto.input.ProdutoInputDto;
 import com.algaworks.algafood.api.dto.output.ProdutoOutputDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.ProdutoService;
@@ -37,6 +38,7 @@ public class RestauranteProdutoController {
 	@Autowired
 	private ProdutoDtoAssembler produtoDtoAssembler;
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping
 	public List<ProdutoOutputDto> listar(@PathVariable Long codRestaurante,
 			@RequestParam(required = false) boolean incluirInativos) {
@@ -53,6 +55,7 @@ public class RestauranteProdutoController {
 		return produtoDtoAssembler.toCollectionOutputDtoFromDomainEntity(produtos);
 	}
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping("/{codProduto}")
 	private ProdutoOutputDto buscar(@PathVariable Long codRestaurante, @PathVariable Long codProduto) {
 		Produto produto = produtoService.buscarOuFalhar(codRestaurante, codProduto);
@@ -60,6 +63,7 @@ public class RestauranteProdutoController {
 		return produtoDtoAssembler.toOutputDtoFromDomainEntity(produto);
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ProdutoOutputDto adicionar(@PathVariable Long codRestaurante,
@@ -74,6 +78,7 @@ public class RestauranteProdutoController {
 		return produtoDtoAssembler.toOutputDtoFromDomainEntity(produto);
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping("/{codProduto}")
 	public ProdutoOutputDto atualizar(@PathVariable Long codRestaurante, @PathVariable Long codProduto,
 			@RequestBody @Valid ProdutoInputDto produtoInput) {

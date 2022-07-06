@@ -20,6 +20,7 @@ import com.algaworks.algafood.api.assembler.impl.RestauranteDtoAssembler;
 import com.algaworks.algafood.api.dto.input.RestauranteInputDto;
 import com.algaworks.algafood.api.dto.output.RestauranteOutputDto;
 import com.algaworks.algafood.api.view.RestauranteView;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -42,12 +43,14 @@ public class RestauranteController {
 	@Autowired
 	private RestauranteDtoAssembler restauranteDtoAssembler;
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@JsonView(RestauranteView.Resumo.class)
 	@GetMapping
 	public List<RestauranteOutputDto> listar() {
 		return restauranteDtoAssembler.toCollectionOutputDtoFromDomainEntity(restauranteRepository.findAll());
 	}
 	
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@JsonView(RestauranteView.ApenasNome.class)
 	@GetMapping(params = "projecao=apenas-nome")
 	public List<RestauranteOutputDto> listarApenasNomes() {
@@ -74,6 +77,7 @@ public class RestauranteController {
 //		return restaurantesWrapper;
 //	}
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping("/{codRestaurante}")
 	public RestauranteOutputDto buscar(@PathVariable Long codRestaurante) {
 		Restaurante restaurante = restauranteService.buscarOuFalhar(codRestaurante);
@@ -81,6 +85,7 @@ public class RestauranteController {
 		return restauranteDtoAssembler.toOutputDtoFromDomainEntity(restaurante);
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public RestauranteOutputDto adicionar(@RequestBody @Valid RestauranteInputDto restauranteInput) {
@@ -93,6 +98,7 @@ public class RestauranteController {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping("/{codRestaurante}")
 	public RestauranteOutputDto atualizar(@PathVariable Long codRestaurante,
 			@RequestBody @Valid RestauranteInputDto restauranteInput) {
@@ -113,18 +119,21 @@ public class RestauranteController {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping("/{codRestaurante}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativar(@PathVariable Long codRestaurante) {
 		restauranteService.ativar(codRestaurante);
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@DeleteMapping("/{codRestaurante}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativar(@PathVariable Long codRestaurante) {
 		restauranteService.inativar(codRestaurante);
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping("/ativacoes")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativarMultiplos(@RequestBody List<Long> codRestaurantes) {
@@ -135,6 +144,7 @@ public class RestauranteController {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@DeleteMapping("/ativacoes")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativarMultiplos(@RequestBody List<Long> codRestaurantes) {
@@ -145,12 +155,14 @@ public class RestauranteController {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping("/{codRestaurante}/abertura")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void abrir(@PathVariable Long codRestaurante) {
 		restauranteService.abrir(codRestaurante);
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping("/{codRestaurante}/fechamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void fechar(@PathVariable Long codRestaurante) {

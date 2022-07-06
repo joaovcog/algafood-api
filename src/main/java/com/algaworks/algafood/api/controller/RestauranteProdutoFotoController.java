@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.algaworks.algafood.api.assembler.impl.ProdutoFotoDtoAssembler;
 import com.algaworks.algafood.api.dto.input.ProdutoFotoInputDto;
 import com.algaworks.algafood.api.dto.output.ProdutoFotoOutputDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.ProdutoFoto;
@@ -49,6 +50,7 @@ public class RestauranteProdutoFotoController {
 	@Autowired
 	private ProdutoFotoDtoAssembler produtoFotoDtoAssembler;
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ProdutoFotoOutputDto buscar(@PathVariable Long codRestaurante, @PathVariable Long codProduto) {
 		ProdutoFoto produtoFoto = produtoFotoService.buscarOuFalhar(codRestaurante, codProduto);
@@ -84,6 +86,7 @@ public class RestauranteProdutoFotoController {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ProdutoFotoOutputDto atualizarFoto(@PathVariable Long codRestaurante, @PathVariable Long codProduto,
 			@Valid ProdutoFotoInputDto produtoFotoInput) throws IOException {
@@ -95,6 +98,7 @@ public class RestauranteProdutoFotoController {
 		return produtoFotoDtoAssembler.toOutputDtoFromDomainEntity(fotoSalva);
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void removerFoto(@PathVariable Long codRestaurante,

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.assembler.impl.FormaPagamentoDtoAssembler;
 import com.algaworks.algafood.api.dto.output.FormaPagamentoOutputDto;
 import com.algaworks.algafood.api.openapi.controller.RestauranteFormaPagamentoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
 
@@ -28,6 +29,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 	@Autowired
 	private FormaPagamentoDtoAssembler formaPagamentoDtoAssembler;
 	
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping
 	public List<FormaPagamentoOutputDto> listar(@PathVariable Long codRestaurante) {
 		Restaurante restaurante = restauranteService.buscarOuFalhar(codRestaurante);
@@ -35,12 +37,14 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 		return formaPagamentoDtoAssembler.toCollectionOutputDtoFromDomainEntity(restaurante.getFormasPagamento());
 	}
 	
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping("/{codFormaPagamento}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void vincularFormaPagamento(@PathVariable Long codRestaurante, @PathVariable Long codFormaPagamento) {
 		restauranteService.vincularFormaPagamento(codRestaurante, codFormaPagamento);
 	}
 	
+	@CheckSecurity.Restaurantes.PodeEditar
 	@DeleteMapping("/{codFormaPagamento}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void desvincularFormaPagamento(@PathVariable Long codRestaurante, @PathVariable Long codFormaPagamento) {
