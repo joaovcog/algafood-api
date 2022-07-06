@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public @interface CheckSecurity {
 	
 	public @interface Cozinhas {
+		
 		@PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
 		@Retention(RUNTIME)
 		@Target(METHOD)
@@ -21,6 +22,7 @@ public @interface CheckSecurity {
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeEditar {}
+		
 	}
 	
 	public @interface Restaurantes {
@@ -74,6 +76,20 @@ public @interface CheckSecurity {
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeGerenciarPedidos {}
+		
+	}
+	
+	public @interface FormasPagamento {
+		
+		@PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+		@Retention(RUNTIME)
+		@Target(METHOD)
+		public @interface PodeConsultar {}
+		
+		@PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_FORMAS_PAGAMENTO')")
+		@Retention(RUNTIME)
+		@Target(METHOD)
+		public @interface PodeEditar {}
 		
 	}
 	

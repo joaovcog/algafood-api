@@ -25,6 +25,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import com.algaworks.algafood.api.assembler.impl.FormaPagamentoDtoAssembler;
 import com.algaworks.algafood.api.dto.input.FormaPagamentoInputDto;
 import com.algaworks.algafood.api.dto.output.FormaPagamentoOutputDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.service.FormaPagamentoService;
 
@@ -38,6 +39,7 @@ public class FormaPagamentoController {
 	@Autowired
 	private FormaPagamentoDtoAssembler formaPagamentoDtoAssembler;
 	
+	@CheckSecurity.FormasPagamento.PodeConsultar
 	@GetMapping
 	public ResponseEntity<List<FormaPagamentoOutputDto>> listar(ServletWebRequest request) {
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -59,6 +61,7 @@ public class FormaPagamentoController {
 				.body(formasPagamentosOutputDto);
 	}
 	
+	@CheckSecurity.FormasPagamento.PodeConsultar
 	@GetMapping("/{codFormaPagamento}")
 	public ResponseEntity<FormaPagamentoOutputDto> buscar(@PathVariable Long codFormaPagamento, ServletWebRequest request) {
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -80,6 +83,7 @@ public class FormaPagamentoController {
 				.body(formaPagamentoOutputDto);
 	}
 	
+	@CheckSecurity.FormasPagamento.PodeEditar
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public FormaPagamentoOutputDto adicionar(@RequestBody @Valid FormaPagamentoInputDto formaPagamentoInput) {
@@ -89,6 +93,7 @@ public class FormaPagamentoController {
 		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamento);
 	}
 	
+	@CheckSecurity.FormasPagamento.PodeEditar
 	@PutMapping("/{codFormaPagamento}")
 	public FormaPagamentoOutputDto atualizar(@PathVariable Long codFormaPagamento, @RequestBody @Valid FormaPagamentoInputDto formaPagamentoInput) {
 		FormaPagamento formaPagamentoAtual = formaPagamentoService.buscarOuFalhar(codFormaPagamento);
@@ -100,6 +105,7 @@ public class FormaPagamentoController {
 		return formaPagamentoDtoAssembler.toOutputDtoFromDomainEntity(formaPagamentoAtual);
 	}
 	
+	@CheckSecurity.FormasPagamento.PodeEditar
 	@DeleteMapping("/{codFormaPagamento}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long codFormaPagamento) {
