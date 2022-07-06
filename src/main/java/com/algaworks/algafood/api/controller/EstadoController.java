@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.assembler.impl.EstadoDtoRepresentationAssembler;
 import com.algaworks.algafood.api.dto.input.EstadoInputDto;
 import com.algaworks.algafood.api.dto.output.EstadoOutputDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 import com.algaworks.algafood.domain.service.EstadoService;
@@ -37,20 +38,23 @@ public class EstadoController {
 	@Autowired
 	private EstadoDtoRepresentationAssembler estadoDtoRepresentationAssembler;
 	
+	@CheckSecurity.Estados.PodeConsultar
 	@GetMapping
 	public CollectionModel<EstadoOutputDto> listar() {
 		List<Estado> estados = estadoRepository.findAll();
 		
 		return estadoDtoRepresentationAssembler.toCollectionModel(estados);
 	}
-
+	
+	@CheckSecurity.Estados.PodeConsultar
 	@GetMapping("/{codEstado}")
 	public EstadoOutputDto buscar(@PathVariable Long codEstado) {
 		Estado estado = estadoService.buscarOuFalhar(codEstado);
 		
 		return estadoDtoRepresentationAssembler.toModel(estado);
 	}
-
+	
+	@CheckSecurity.Estados.PodeEditar
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public EstadoOutputDto adicionar(@RequestBody @Valid EstadoInputDto estadoInput) {
@@ -59,7 +63,8 @@ public class EstadoController {
 		
 		return estadoDtoRepresentationAssembler.toModel(estado);
 	}
-
+	
+	@CheckSecurity.Estados.PodeEditar
 	@PutMapping("/{codEstado}")
 	public EstadoOutputDto atualizar(@PathVariable Long codEstado, @RequestBody @Valid EstadoInputDto estadoInput) {
 		Estado estadoAtual = estadoService.buscarOuFalhar(codEstado);
@@ -70,7 +75,8 @@ public class EstadoController {
 
 		return estadoDtoRepresentationAssembler.toModel(estadoAtual);
 	}
-
+	
+	@CheckSecurity.Estados.PodeEditar
 	@DeleteMapping("/{codEstado}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long codEstado) {

@@ -25,6 +25,7 @@ import com.algaworks.algafood.api.assembler.impl.CidadeDtoRepresentationAssemble
 import com.algaworks.algafood.api.dto.input.CidadeInputDto;
 import com.algaworks.algafood.api.dto.output.CidadeOutputDto;
 import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -47,6 +48,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 	@Autowired
 	private PagedResourcesAssembler<Cidade> pagedResourcesAssembler;
 	
+	@CheckSecurity.Cidades.PodeConsultar
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public PagedModel<CidadeOutputDto> listar(@PageableDefault(size = 5) Pageable pageable) {
 		Page<Cidade> cidadesPage = cidadeRepository.findAllPaginado(pageable);
@@ -55,7 +57,8 @@ public class CidadeController implements CidadeControllerOpenApi {
 		
 		return cidadesPagedModel;
 	}
-
+	
+	@CheckSecurity.Cidades.PodeConsultar
 	@GetMapping(path = "/{codCidade}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeOutputDto buscar(@PathVariable Long codCidade) {
 		Cidade cidade = cidadeService.buscarOuFalhar(codCidade);
@@ -64,7 +67,8 @@ public class CidadeController implements CidadeControllerOpenApi {
 		
 		return cidadeOutputDto;
 	}
-
+	
+	@CheckSecurity.Cidades.PodeEditar
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeOutputDto adicionar(@RequestBody @Valid CidadeInputDto cidadeInput) {
@@ -80,7 +84,8 @@ public class CidadeController implements CidadeControllerOpenApi {
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
-
+	
+	@CheckSecurity.Cidades.PodeEditar
 	@PutMapping(path = "/{codCidade}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeOutputDto atualizar(@PathVariable Long codCidade, @RequestBody @Valid CidadeInputDto cidadeInput) {
 		Cidade cidadeAtual = cidadeService.buscarOuFalhar(codCidade);
@@ -93,7 +98,8 @@ public class CidadeController implements CidadeControllerOpenApi {
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
-
+	
+	@CheckSecurity.Cidades.PodeEditar
 	@DeleteMapping("/{codCidade}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long codCidade) {
