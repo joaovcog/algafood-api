@@ -21,6 +21,7 @@ import com.algaworks.algafood.api.dto.input.UsuarioAtualizacaoInputDto;
 import com.algaworks.algafood.api.dto.input.UsuarioAtualizacaoSenhaInputDto;
 import com.algaworks.algafood.api.dto.input.UsuarioCadastroInputDto;
 import com.algaworks.algafood.api.dto.output.UsuarioOutputDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.UsuarioService;
 
@@ -34,6 +35,7 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioDtoRepresentationAssembler usuarioDtoRepresentationAssembler;
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	public CollectionModel<UsuarioOutputDto> listar() {
 		List<Usuario> usuarios = usuarioService.listar();
@@ -41,6 +43,7 @@ public class UsuarioController {
 		return usuarioDtoRepresentationAssembler.toCollectionModel(usuarios);
 	}
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping("/{codUsuario}")
 	public UsuarioOutputDto buscar(@PathVariable Long codUsuario) {
 		Usuario usuario = usuarioService.buscarOuFalhar(codUsuario);
@@ -57,6 +60,7 @@ public class UsuarioController {
 		return usuarioDtoRepresentationAssembler.toModel(usuario);
 	}
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeAlterarUsuario
 	@PutMapping("/{codUsuario}")
 	public UsuarioOutputDto atualizar(@PathVariable Long codUsuario, @RequestBody @Valid UsuarioAtualizacaoInputDto usuarioInput) {
 		Usuario usuarioAtual = usuarioService.buscarOuFalhar(codUsuario);
@@ -68,6 +72,7 @@ public class UsuarioController {
 		return usuarioDtoRepresentationAssembler.toModel(usuarioAtual);
 	}
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeAlterarPropriaSenha
 	@PutMapping("/{codUsuario}/senha")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void atualizarSenha(@PathVariable Long codUsuario, @RequestBody @Valid UsuarioAtualizacaoSenhaInputDto usuarioInput) {

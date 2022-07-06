@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.impl.GrupoDtoAssembler;
 import com.algaworks.algafood.api.dto.output.GrupoOutputDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.UsuarioService;
 
@@ -27,6 +28,7 @@ public class UsuarioGrupoController {
 	@Autowired
 	private GrupoDtoAssembler grupoDtoAssembler;
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	public List<GrupoOutputDto> listar(@PathVariable Long codUsuario) {
 		Usuario usuario = usuarioService.buscarOuFalhar(codUsuario);
@@ -34,12 +36,14 @@ public class UsuarioGrupoController {
 		return grupoDtoAssembler.toCollectionOutputDtoFromDomainEntity(usuario.getGrupos());
 	}
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@PutMapping("/{codGrupo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void vincularGrupo(@PathVariable Long codUsuario, @PathVariable Long codGrupo) {
 		usuarioService.vincularGrupo(codUsuario, codGrupo);
 	}
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@DeleteMapping("/{codGrupo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void desvincularGrupo(@PathVariable Long codUsuario, @PathVariable Long codGrupo) {

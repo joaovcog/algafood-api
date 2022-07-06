@@ -21,6 +21,7 @@ import com.algaworks.algafood.api.assembler.impl.GrupoDtoAssembler;
 import com.algaworks.algafood.api.dto.input.GrupoInputDto;
 import com.algaworks.algafood.api.dto.output.GrupoOutputDto;
 import com.algaworks.algafood.api.openapi.controller.GrupoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.service.GrupoService;
 
@@ -34,6 +35,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 	@Autowired
 	private GrupoDtoAssembler grupoDtoAssembler;
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<GrupoOutputDto> listar() {
 		List<Grupo> grupos = grupoService.listar();
@@ -41,6 +43,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 		return grupoDtoAssembler.toCollectionOutputDtoFromDomainEntity(grupos);
 	}
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping(path = "/{codGrupo}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public GrupoOutputDto buscar(@PathVariable Long codGrupo) {
 		Grupo grupo = grupoService.buscarOuFalhar(codGrupo);
@@ -48,6 +51,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 		return grupoDtoAssembler.toOutputDtoFromDomainEntity(grupo);
 	}
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public GrupoOutputDto adicionar(@RequestBody GrupoInputDto grupoInput) {
@@ -55,7 +59,8 @@ public class GrupoController implements GrupoControllerOpenApi {
 
 		return grupoDtoAssembler.toOutputDtoFromDomainEntity(grupoService.salvar(grupo));
 	}
-
+	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@PutMapping(path = "/{codGrupo}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public GrupoOutputDto atualizar(@PathVariable Long codGrupo, @RequestBody @Valid GrupoInputDto grupoInput) {
 		Grupo grupoAtual = grupoService.buscarOuFalhar(codGrupo);
@@ -64,7 +69,8 @@ public class GrupoController implements GrupoControllerOpenApi {
 
 		return grupoDtoAssembler.toOutputDtoFromDomainEntity(grupoService.salvar(grupoAtual));
 	}
-
+	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@DeleteMapping("/{codGrupo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void excluir(@PathVariable Long codGrupo) {

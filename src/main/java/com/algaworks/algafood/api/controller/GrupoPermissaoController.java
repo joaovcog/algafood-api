@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.impl.PermissaoDtoAssembler;
 import com.algaworks.algafood.api.dto.output.PermissaoOutputDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.service.GrupoService;
 
@@ -27,6 +28,7 @@ public class GrupoPermissaoController {
 	@Autowired
 	private PermissaoDtoAssembler permissaoDtoAssembler;
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	public List<PermissaoOutputDto> listar(@PathVariable Long codGrupo) {
 		Grupo grupo = grupoService.buscarOuFalhar(codGrupo);
@@ -34,12 +36,14 @@ public class GrupoPermissaoController {
 		return permissaoDtoAssembler.toCollectionOutputDtoFromDomainEntity(grupo.getPermissoes());
 	}
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@PutMapping("/{codPermissao}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void vincularPermissao(@PathVariable Long codGrupo, @PathVariable Long codPermissao) {
 		grupoService.vincularPermissao(codGrupo, codPermissao);
 	}
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@DeleteMapping("/{codPermissao}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void desvincularPermissao(@PathVariable Long codGrupo, @PathVariable Long codPermissao) {
