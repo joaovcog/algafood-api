@@ -42,14 +42,14 @@ public class RestauranteUsuarioResponsavelController {
 						.withSelfRel());
 	}
 	
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
 	@PutMapping("/{codUsuario}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void vincularUsuariosResponsaveis(@PathVariable Long codRestaurante, @PathVariable Long codUsuario) {
 		restauranteService.vincularUsuarioResponsavel(codRestaurante, codUsuario);
 	}
 	
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
 	@DeleteMapping("/{codUsuario}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void desvincularUsuariosResponsaveis(@PathVariable Long codRestaurante, @PathVariable Long codUsuario) {

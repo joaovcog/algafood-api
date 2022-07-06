@@ -86,7 +86,7 @@ public class RestauranteProdutoFotoController {
 		}
 	}
 
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ProdutoFotoOutputDto atualizarFoto(@PathVariable Long codRestaurante, @PathVariable Long codProduto,
 			@Valid ProdutoFotoInputDto produtoFotoInput) throws IOException {
@@ -98,7 +98,7 @@ public class RestauranteProdutoFotoController {
 		return produtoFotoDtoAssembler.toOutputDtoFromDomainEntity(fotoSalva);
 	}
 
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void removerFoto(@PathVariable Long codRestaurante,

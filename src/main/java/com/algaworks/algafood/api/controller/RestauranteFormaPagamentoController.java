@@ -37,14 +37,14 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 		return formaPagamentoDtoAssembler.toCollectionOutputDtoFromDomainEntity(restaurante.getFormasPagamento());
 	}
 	
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@PutMapping("/{codFormaPagamento}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void vincularFormaPagamento(@PathVariable Long codRestaurante, @PathVariable Long codFormaPagamento) {
 		restauranteService.vincularFormaPagamento(codRestaurante, codFormaPagamento);
 	}
 	
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@DeleteMapping("/{codFormaPagamento}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void desvincularFormaPagamento(@PathVariable Long codRestaurante, @PathVariable Long codFormaPagamento) {

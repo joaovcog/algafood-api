@@ -63,7 +63,7 @@ public class RestauranteProdutoController {
 		return produtoDtoAssembler.toOutputDtoFromDomainEntity(produto);
 	}
 
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ProdutoOutputDto adicionar(@PathVariable Long codRestaurante,
@@ -78,7 +78,7 @@ public class RestauranteProdutoController {
 		return produtoDtoAssembler.toOutputDtoFromDomainEntity(produto);
 	}
 
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@PutMapping("/{codProduto}")
 	public ProdutoOutputDto atualizar(@PathVariable Long codRestaurante, @PathVariable Long codProduto,
 			@RequestBody @Valid ProdutoInputDto produtoInput) {

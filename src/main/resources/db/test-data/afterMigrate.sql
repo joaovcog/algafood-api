@@ -126,7 +126,7 @@ insert into usuarios_grupos (cod_usuario, cod_grupo) values (1, 1), (1, 2), (2, 
 
 
 
-insert into restaurantes_usuarios_responsaveis (cod_restaurante, cod_usuario) values (1, 1), (2, 1), (3, 2), (4, 3);
+insert into restaurantes_usuarios_responsaveis (cod_restaurante, cod_usuario) values (1, 1), (2, 1), (3, 2), (4, 3), (5, 5), (6, 5);
 
 
 
