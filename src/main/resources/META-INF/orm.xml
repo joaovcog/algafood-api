@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <entity-mappings
 	xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_2.xsd"
-    version="2.2">
-	
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_2.xsd"
+	version="2.2">
+
 	<named-query name="Restaurante.consultarPorNome">
 		<query>
 			from Restaurante 
@@ -12,7 +12,7 @@
 				and cozinha.codigo = :codCozinha
 		</query>
 	</named-query>
-	
+
 	<named-query name="Restaurante.existsResponsavel">
 		<query>
 			select case when count (1) > 0 then true else false end 
@@ -22,5 +22,16 @@
 				and resp.codigo = :codUsuario
 		</query>
 	</named-query>
-	
+
+	<named-query name="Pedido.isPedidoGerenciadoPor">
+		<query>
+		    select case when count(1) > 0 then true else false end
+			    from Pedido ped
+			    join ped.restaurante rest
+			    join rest.usuariosResponsaveis resp
+			    where ped.identificador = :identificadorPedido 
+			    and resp.codigo = :codUsuario
+	    </query>
+	</named-query>
+
 </entity-mappings>

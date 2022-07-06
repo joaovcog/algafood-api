@@ -23,4 +23,6 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long>, JpaSpecif
 			+ "join fetch c.estado")
 	List<Pedido> findAll();
 	
+	boolean isPedidoGerenciadoPor(String identificadorPedido, Long codUsuario);
+	
 }

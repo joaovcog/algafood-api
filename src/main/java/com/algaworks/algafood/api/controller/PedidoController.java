@@ -27,6 +27,7 @@ import com.algaworks.algafood.api.dto.output.PedidoOutputDto;
 import com.algaworks.algafood.api.dto.output.PedidoResumoOutputDto;
 import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.core.security.AlgaSecurity;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.filter.PedidoFilter;
@@ -50,6 +51,7 @@ public class PedidoController {
 	@Autowired
 	private AlgaSecurity algaSecurity;
 
+	@CheckSecurity.Pedidos.PodePesquisar
 	@GetMapping
 	public Page<PedidoResumoOutputDto> pesquisar(PedidoFilter filtro, @PageableDefault(size = 5) Pageable pageable) {
 		pageable = traduzirPageable(pageable);
@@ -64,6 +66,7 @@ public class PedidoController {
 		return pedidosResumoOutputDtoPage;
 	}
 
+	@CheckSecurity.Pedidos.PodeBuscar
 	@GetMapping("/{identificadorPedido}")
 	public PedidoOutputDto buscar(@PathVariable String identificadorPedido) {
 		Pedido pedido = pedidoService.buscarOuFalhar(identificadorPedido);
@@ -71,6 +74,7 @@ public class PedidoController {
 		return pedidoDtoAssembler.toOutputDtoFromDomainEntity(pedido);
 	}
 
+	@CheckSecurity.Pedidos.PodeCriar
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public PedidoOutputDto adicionar(@RequestBody @Valid PedidoInputDto pedidoInput) {
@@ -88,18 +92,21 @@ public class PedidoController {
 		}
 	}
 
+	@CheckSecurity.Pedidos.PodeGerenciarPedidos
 	@PutMapping("/{identificadorPedido}/confirmacao")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void confirmar(@PathVariable String identificadorPedido) {
 		pedidoService.confirmar(identificadorPedido);
 	}
-
+	
+	@CheckSecurity.Pedidos.PodeGerenciarPedidos
 	@PutMapping("/{identificadorPedido}/entrega")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void entregar(@PathVariable String identificadorPedido) {
 		pedidoService.entregar(identificadorPedido);
 	}
-
+	
+	@CheckSecurity.Pedidos.PodeGerenciarPedidos
 	@PutMapping("/{identificadorPedido}/cancelamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void cancelar(@PathVariable String identificadorPedido) {
