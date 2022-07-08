@@ -21,7 +21,7 @@ public class NotificacaoClientePedidoCanceladoListener {
 		
 		var mensagem = Mensagem.builder()
 				.assunto(pedido.getRestaurante().getNome() + " - Pedido cancelado")
-				.corpo("pedido-cancelado.html").modeloTemplate("pedido", pedido)
+				.corpo("emails/pedido-cancelado.html").modeloTemplate("pedido", pedido)
 				.destinatario(pedido.getUsuarioCliente().getEmail()).build();
 
 		envioEmailService.enviar(mensagem);
