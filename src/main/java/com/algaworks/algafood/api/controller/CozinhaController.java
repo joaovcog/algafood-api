@@ -27,9 +27,6 @@ import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CozinhaService;
 
-import io.swagger.annotations.Api;
-
-@Api(tags = "Cozinhas")
 @RestController
 @RequestMapping("/cozinhas")
 public class CozinhaController {
