@@ -5,6 +5,9 @@ import java.io.IOException;
 import com.algaworks.algafood.api.dto.input.ProdutoFotoInputDto;
 import com.algaworks.algafood.api.dto.output.ProdutoFotoOutputDto;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@SecurityRequirement(name = "security-auth")
 public interface RestauranteProdutoFotoControllerOpenApi {
 	
 	public ProdutoFotoOutputDto buscar(Long codRestaurante, Long codProduto);

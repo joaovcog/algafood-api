@@ -6,6 +6,9 @@ import org.springframework.hateoas.PagedModel;
 import com.algaworks.algafood.api.dto.input.CidadeInputDto;
 import com.algaworks.algafood.api.dto.output.CidadeOutputDto;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@SecurityRequirement(name = "security-auth")
 public interface CidadeControllerOpenApi {
 	
 	public PagedModel<CidadeOutputDto> listar(Pageable pageable);
