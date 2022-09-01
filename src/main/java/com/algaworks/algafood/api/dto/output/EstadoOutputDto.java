@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.dto.output;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,8 +12,10 @@ import lombok.Setter;
 @Setter
 public class EstadoOutputDto extends RepresentationModel<EstadoOutputDto> {
 	
+	@Schema(example = "1")
 	private Long codigo;
 	
+	@Schema(example = "Minas Gerais")
 	private String nome;
 	
 }
