@@ -26,7 +26,7 @@ public interface CidadeControllerOpenApi {
 			@ApiResponse(responseCode = "200"), 
 			@ApiResponse(responseCode = "400", 
 				description = "Código da cidade inválido", 
-				content = @Content(schema = @Schema))
+				content = @Content(schema = @Schema(ref = "ApiError")))
 		})
 	public CidadeOutputDto buscar(@Parameter(description = "Código de uma cidade", example = "1", required = true) Long codCidade);
 
