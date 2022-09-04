@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.algaworks.algafood.api.assembler.impl.ProdutoFotoDtoAssembler;
 import com.algaworks.algafood.api.dto.input.ProdutoFotoInputDto;
 import com.algaworks.algafood.api.dto.output.ProdutoFotoOutputDto;
+import com.algaworks.algafood.api.openapi.controller.RestauranteProdutoFotoControllerOpenApi;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Produto;
@@ -36,7 +37,7 @@ import com.algaworks.algafood.domain.service.ProdutoService;
 
 @RestController
 @RequestMapping("/restaurantes/{codRestaurante}/produtos/{codProduto}/foto")
-public class RestauranteProdutoFotoController {
+public class RestauranteProdutoFotoController implements RestauranteProdutoFotoControllerOpenApi {
 
 	@Autowired
 	private ProdutoFotoService produtoFotoService;
