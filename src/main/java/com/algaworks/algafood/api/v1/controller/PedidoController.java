@@ -36,7 +36,7 @@ import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.PedidoService;
 
 @RestController
-@RequestMapping("/pedidos")
+@RequestMapping("/v1/pedidos")
 public class PedidoController {
 
 	@Autowired

@@ -30,7 +30,7 @@ import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.service.FormaPagamentoService;
 
 @RestController
-@RequestMapping("/formas-pagamento")
+@RequestMapping("/v1/formas-pagamento")
 public class FormaPagamentoController {
 	
 	@Autowired

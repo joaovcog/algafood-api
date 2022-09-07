@@ -31,7 +31,7 @@ import com.algaworks.algafood.domain.service.RestauranteService;
 import com.fasterxml.jackson.annotation.JsonView;
 
 @RestController
-@RequestMapping("/restaurantes")
+@RequestMapping("/v1/restaurantes")
 public class RestauranteController {
 
 	@Autowired

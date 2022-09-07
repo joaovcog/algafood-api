@@ -20,7 +20,7 @@ import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
 
 @RestController
-@RequestMapping("/restaurantes/{codRestaurante}/formas-pagamento")
+@RequestMapping("/v1/restaurantes/{codRestaurante}/formas-pagamento")
 public class RestauranteFormaPagamentoController implements RestauranteFormaPagamentoControllerOpenApi {
 
 	@Autowired

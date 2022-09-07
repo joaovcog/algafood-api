@@ -19,7 +19,7 @@ import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.UsuarioService;
 
 @RestController
-@RequestMapping("/usuarios/{codUsuario}/grupos")
+@RequestMapping("/v1/usuarios/{codUsuario}/grupos")
 public class UsuarioGrupoController {
 	
 	@Autowired

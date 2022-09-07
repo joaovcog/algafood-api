@@ -26,7 +26,7 @@ import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.service.GrupoService;
 
 @RestController
-@RequestMapping(path = "/grupos")
+@RequestMapping(path = "/v1/grupos")
 public class GrupoController implements GrupoControllerOpenApi {
 
 	@Autowired
