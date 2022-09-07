@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,6 @@ import com.algaworks.algafood.api.v2.assembler.impl.CidadeDtoRepresentationAssem
 import com.algaworks.algafood.api.v2.dto.input.CidadeInputDtoV2;
 import com.algaworks.algafood.api.v2.dto.output.CidadeOutputDtoV2;
 import com.algaworks.algafood.core.security.CheckSecurity;
-import com.algaworks.algafood.core.web.AlgaMediaTypes;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -31,7 +31,7 @@ import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CidadeService;
 
 @RestController
-@RequestMapping(path = "/cidades")
+@RequestMapping(path = "/v2/cidades")
 public class CidadeControllerV2 {
 
 	@Autowired
@@ -47,7 +47,7 @@ public class CidadeControllerV2 {
 	private PagedResourcesAssembler<Cidade> pagedResourcesAssembler;
 	
 	@CheckSecurity.Cidades.PodeConsultar
-	@GetMapping(produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public PagedModel<CidadeOutputDtoV2> listar(@PageableDefault(size = 5) Pageable pageable) {
 		Page<Cidade> cidadesPage = cidadeRepository.findAllPaginado(pageable);
 		
@@ -57,7 +57,7 @@ public class CidadeControllerV2 {
 	}
 	
 	@CheckSecurity.Cidades.PodeConsultar
-	@GetMapping(path = "/{codCidade}", produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/{codCidade}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeOutputDtoV2 buscar(@PathVariable Long codCidade) {
 		Cidade cidade = cidadeService.buscarOuFalhar(codCidade);
 		
@@ -67,7 +67,7 @@ public class CidadeControllerV2 {
 	}
 	
 	@CheckSecurity.Cidades.PodeEditar
-	@PostMapping(produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeOutputDtoV2 adicionar(@RequestBody @Valid CidadeInputDtoV2 cidadeInput) {
 		try {
@@ -84,7 +84,7 @@ public class CidadeControllerV2 {
 	}
 	
 	@CheckSecurity.Cidades.PodeEditar
-	@PutMapping(path = "/{codCidade}", produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+	@PutMapping(path = "/{codCidade}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeOutputDtoV2 atualizar(@PathVariable Long codCidade, @RequestBody @Valid CidadeInputDtoV2 cidadeInput) {
 		Cidade cidadeAtual = cidadeService.buscarOuFalhar(codCidade);
 		
