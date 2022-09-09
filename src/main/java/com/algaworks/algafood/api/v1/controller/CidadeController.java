@@ -48,6 +48,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 	@Autowired
 	private PagedResourcesAssembler<Cidade> pagedResourcesAssembler;
 	
+	@Deprecated
 	@CheckSecurity.Cidades.PodeConsultar
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public PagedModel<CidadeOutputDto> listar(@PageableDefault(size = 5) Pageable pageable) {

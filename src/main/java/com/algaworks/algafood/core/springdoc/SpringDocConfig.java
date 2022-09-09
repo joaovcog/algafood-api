@@ -51,7 +51,7 @@ public class SpringDocConfig {
 	public OpenAPI openApi() {
 		return new OpenAPI()
 				.info(new Info()
-						.title("AlgaFood API")
+						.title("AlgaFood API (Depreciada)")
 						.version("v1")
 						.description("REST API do AlgaFood")
 						.license(new License()
