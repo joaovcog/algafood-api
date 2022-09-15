@@ -4,15 +4,14 @@ import java.util.TimeZone;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import com.algaworks.algafood.infrastructure.repository.CustomJpaRepositoryImpl;
 
 @SpringBootApplication
-@PropertySource(
-		value = "file:C:/Users/joaov/properties/algafood-extra.properties", 
-		ignoreResourceNotFound = true)
+//@PropertySource(
+//		value = "file:C:/Users/joaov/properties/algafood-extra.properties", 
+//		ignoreResourceNotFound = true)
 @EnableJpaRepositories(repositoryBaseClass = CustomJpaRepositoryImpl.class)
 public class AlgafoodApiApplication {
 
