@@ -9,9 +9,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import com.algaworks.algafood.infrastructure.repository.CustomJpaRepositoryImpl;
 
 @SpringBootApplication
-//@PropertySource(
-//		value = "file:C:/Users/joaov/properties/algafood-extra.properties", 
-//		ignoreResourceNotFound = true)
 @EnableJpaRepositories(repositoryBaseClass = CustomJpaRepositoryImpl.class)
 public class AlgafoodApiApplication {
 
