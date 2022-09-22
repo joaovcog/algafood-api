@@ -6,14 +6,10 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import com.algaworks.algafood.core.email.EmailProperties;
 import com.algaworks.algafood.domain.service.EnvioEmailService;
 import com.algaworks.algafood.infrastructure.service.email.exception.EmailException;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 
 public class SmtpEnvioEmailService implements EnvioEmailService {
 
@@ -22,9 +18,9 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
 
 	@Autowired
 	private EmailProperties emailProperties;
-
+	
 	@Autowired
-	private Configuration freemarkerConfig;
+	private ProcessadorTemplateEmail processadorTemplateEmail;
 
 	@Override
 	public void enviar(Mensagem mensagem) {
@@ -38,7 +34,7 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
 	}
 	
 	protected MimeMessage criarMimeMessage(Mensagem mensagem) throws MessagingException {
-		String corpo = processarTemplate(mensagem);
+		String corpo = processadorTemplateEmail.processarTemplate(mensagem);
 
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
 
@@ -49,16 +45,6 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
 		helper.setText(corpo, true);
 		
 		return mimeMessage;
-	}
-
-	protected String processarTemplate(Mensagem mensagem) {
-		try {
-			Template template = freemarkerConfig.getTemplate(mensagem.getCorpo());
-			
-			return FreeMarkerTemplateUtils.processTemplateIntoString(template, mensagem.getModelosTemplate());
-		} catch (Exception e) {
-			throw new EmailException("Não foi possível montar o template do e-mail.", e);
-		}
 	}
 
 }
