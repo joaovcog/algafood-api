@@ -25,7 +25,7 @@ public class AlgaSecurity {
 	public Long getCodUsuario() {
 		Jwt jwt = (Jwt) getAuthentication().getPrincipal();
 		
-		return jwt.getClaim("cod_usuario");
+		return Long.valueOf(jwt.getClaim("cod_usuario"));
 	}
 	
 	public boolean isResponsavelRestaurante(Long codRestaurante) {
